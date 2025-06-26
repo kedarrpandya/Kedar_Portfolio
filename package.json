@@ -13,14 +13,22 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "svelte": "^4.2.7",
     "svelte-check": "^3.6.0",
+    "terser": "^5.43.1",
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "gsap": "^3.12.2",
     "three": "^0.158.0",
-    "three-mesh-bvh": "^0.7.0",
-    "gsap": "^3.12.2"
+    "three-mesh-bvh": "^0.7.0"
   },
-  "keywords": ["portfolio", "3d", "threejs", "svelte", "performance", "igloo"],
+  "keywords": [
+    "portfolio",
+    "3d",
+    "threejs",
+    "svelte",
+    "performance",
+    "igloo"
+  ],
   "author": "Igloo Portfolio Replica",
   "license": "MIT"
-} 
+}
