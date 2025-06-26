@@ -490,6 +490,18 @@
       background: none;
       backdrop-filter: none;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .profile-section {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     
     .glass-header {
@@ -609,6 +621,18 @@
       background: none;
       backdrop-filter: none;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .profile-section {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     
     .glass-header {
