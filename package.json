@@ -1,0 +1,26 @@
+{
+  "name": "igloo-portfolio-replica",
+  "version": "1.0.0",
+  "description": "Exact replica of igloo.inc using their technology stack",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./jsconfig.json"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "svelte": "^4.2.7",
+    "svelte-check": "^3.6.0",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "three": "^0.158.0",
+    "three-mesh-bvh": "^0.7.0",
+    "gsap": "^3.12.2"
+  },
+  "keywords": ["portfolio", "3d", "threejs", "svelte", "performance", "igloo"],
+  "author": "Igloo Portfolio Replica",
+  "license": "MIT"
+} 
