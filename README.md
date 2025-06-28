@@ -1,3 +1,15 @@
+# Igloo Portfolio Replica
+
+Exact replica of igloo.inc using their technology stack
+
+## Features
+- Interactive 3D Portfolio Website
+- Built with Svelte, Three.js, and WebGL
+- Click-to-Enter Loading Screen with Cinematic Animation
+- Responsive Design for All Devices
+
+*Last updated: Portfolio now configured with correct author information*
+
 # Arctic Anomaly Portfolio
 
 > **The Arctic Anomaly - Precision Clone Edition**  
