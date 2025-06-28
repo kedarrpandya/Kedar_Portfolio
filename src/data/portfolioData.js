@@ -3,14 +3,14 @@ export const portfolioData = {
   // Personal Information
   personal: {
     name: "Kedar Pandya",
-    title: "Data Analyst & BI Developer",
+    title: "Software Development & Data Solutions Engineer",
     tagline: "Transforming Data into Strategic Insights",
-    location: "Toronto, ON",
+    location: "Canada",
     phone: "+1 (226) 961-4110",
     email: "pandya18@uwindsor.ca",
     portfolio: "#",
-    linkedin: "https://linkedin.com/in/kedar-pandya",
-    github: "https://github.com/kedar-pandya",
+    linkedin: "https://www.linkedin.com/in/kedarrpandya",
+    github: "https://github.com/kedarrpandya",
     summary: "Data Analyst with practical experience in SQL, Python, and data visualization, focused on delivering high-impact dashboards and reports to drive business decision-making. Skilled in data modeling, database querying, and operating within Agile frameworks to support the full software development lifecycle (SDLC). Strong interpersonal and communication skills with a track record of gathering and analyzing business requirements, collaborating with cross-functional teams, and supporting prioritization of tasks based on project impact."
   },
 

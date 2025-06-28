@@ -39,21 +39,76 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: #000;
+        background: linear-gradient(135deg, #383e4e 0%, #2a2f3a 100%);
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         z-index: 1000;
         color: #fff;
         font-size: 18px;
         letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.5s ease;
+      }
+      
+      .loading-content {
+        text-align: center;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      .loading-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #b6bac5;
+        font-weight: 300;
+      }
+      
+      .loading-subtitle {
+        font-size: 14px;
+        color: rgba(183, 186, 197, 0.7);
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+      }
+      
+      .click-indicator {
+        padding: 15px 30px;
+        border: 2px solid #b6bac5;
+        border-radius: 25px;
+        background: rgba(183, 186, 197, 0.1);
+        color: #b6bac5;
+        font-size: 16px;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+      
+      .loading-screen:hover .click-indicator {
+        background: rgba(183, 186, 197, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      
+      .loading-screen.fade-out {
+        opacity: 0;
+        transform: scale(1.1);
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 0.8; }
+        50% { opacity: 1; }
       }
     </style>
   </head>
   <body>
     <div id="app">
-      <div class="loading-screen">
-        LOADING EXPERIENCE...
+      <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+          <div class="loading-title">Kedar's Portfolio</div>
+          <div class="loading-subtitle">3D Experience</div>
+          <div class="click-indicator">Click to Enter</div>
+        </div>
       </div>
     </div>
     <script type="module" src="/src/main.js"></script>

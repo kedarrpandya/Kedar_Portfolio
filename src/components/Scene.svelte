@@ -17,6 +17,8 @@
   let terrain, volumetricLight, artCrystal, particles
   let animationId
   let mousePosition = { x: 0, y: 0 }
+  let isExperienceStarted = false
+  let initialCameraDistance = 50 // Start far away for zoom effect
 
   onMount(async () => {
     try {
@@ -31,7 +33,16 @@
       window.addEventListener('mousemove', handleMouseMove)
       window.addEventListener('resize', handleResize)
       
-      console.log('3D scene initialized successfully!')
+      // Mobile touch support - ensure rendering works on mobile
+      window.addEventListener('touchstart', handleTouchStart, { passive: true })
+      window.addEventListener('touchmove', handleTouchMove, { passive: true })
+      window.addEventListener('touchend', handleTouchEnd, { passive: true })
+      
+      // Listen for zoom animation trigger
+      window.addEventListener('startZoomAnimation', handleZoomAnimation)
+      
+      // Don't start render loop yet - wait for user interaction
+      console.log('3D scene initialized, waiting for click to enter...')
       
     } catch (error) {
       console.error('Failed to initialize scene:', error)
@@ -52,25 +63,36 @@
     scene.background = new THREE.Color(0x383e4e) // Your dark color
     scene.fog = new THREE.Fog(0x383e4e, 10, 50)
 
-    // Camera
+    // Camera - start far away for zoom effect
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.set(-4, 3, 7)
+    camera.position.set(-4 * initialCameraDistance/10, 3 * initialCameraDistance/10, 7 * initialCameraDistance/10)
     camera.lookAt(0, 0.5, 0)
 
-    // Renderer
+    // Renderer with mobile-optimized settings
     renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
+      antialias: window.devicePixelRatio <= 1, // Disable antialias on high-DPI for performance
       alpha: true,
-      powerPreference: "high-performance"
+      powerPreference: "high-performance",
+      preserveDrawingBuffer: false, // Better mobile performance
+      failIfMajorPerformanceCaveat: false // Allow fallback on mobile
     })
+    
+    // Mobile-optimized settings
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    const pixelRatio = isMobile ? Math.min(window.devicePixelRatio, 2) : Math.min(window.devicePixelRatio, 2)
+    
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    renderer.shadowMap.enabled = true
+    renderer.setPixelRatio(pixelRatio)
+    renderer.shadowMap.enabled = !isMobile // Disable shadows on mobile for performance
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.2
     renderer.outputColorSpace = THREE.SRGBColorSpace
+    
+    // Force WebGL context activation
+    renderer.getContext().getExtension('WEBGL_lose_context')
+    console.log('WebGL context created:', renderer.getContext())
 
     console.log('Scene setup complete')
   }
@@ -81,24 +103,33 @@
     scene.add(lighting.ambientLight)
     scene.add(lighting.directionalLight)
     scene.add(lighting.pointLight)
+    console.log('Lighting added to scene')
 
     // Create main art crystal (center piece)
     artCrystal = createArtCrystal()
     scene.add(artCrystal.mesh)
+    console.log('Art crystal created and added to scene:', artCrystal.mesh)
+    console.log('Crystal position:', artCrystal.mesh.position)
+    console.log('Crystal visible:', artCrystal.mesh.visible)
+    console.log('Crystal material:', artCrystal.mesh.material)
 
     // Create spectacular particles
     particles = createParticles()
     scene.add(particles.mesh)
+    console.log('Particles added to scene')
 
     // Create the beautiful terrain you loved
     terrain = createTerrain()
     scene.add(terrain)
+    console.log('Terrain added to scene')
 
     // Create volumetric lighting for atmosphere
     volumetricLight = createVolumetricLighting()
     scene.add(volumetricLight.mesh)
+    console.log('Volumetric lighting added to scene')
 
     console.log('All objects created successfully')
+    console.log('Total scene children:', scene.children.length)
   }
 
   function setupScrollAnimations() {
@@ -135,17 +166,81 @@
     mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1
   }
 
+  function handleTouchStart(event) {
+    // Handle touch as mouse for mobile
+    if (event.touches.length > 0) {
+      const touch = event.touches[0]
+      mousePosition.x = (touch.clientX / window.innerWidth) * 2 - 1
+      mousePosition.y = -(touch.clientY / window.innerHeight) * 2 + 1
+    }
+    
+    // Force render on touch to ensure crystal appears
+    if (renderer && scene && camera) {
+      renderer.render(scene, camera)
+    }
+  }
+
+  function handleTouchMove(event) {
+    // Handle touch move as mouse move for mobile
+    if (event.touches.length > 0) {
+      const touch = event.touches[0]
+      mousePosition.x = (touch.clientX / window.innerWidth) * 2 - 1
+      mousePosition.y = -(touch.clientY / window.innerHeight) * 2 + 1
+    }
+  }
+
+  function handleTouchEnd(event) {
+    // Reset mouse position when touch ends
+    mousePosition.x = 0
+    mousePosition.y = 0
+  }
+
+  function handleZoomAnimation() {
+    if (!isExperienceStarted) {
+      isExperienceStarted = true
+      
+      // Start the render loop
+      startRenderLoop()
+      
+      // Animate camera zoom in with GSAP
+      gsap.to(camera.position, {
+        duration: 2.5,
+        x: -4,
+        y: 3,
+        z: 7,
+        ease: "power2.out",
+        onUpdate: () => {
+          camera.lookAt(0, 0.5, 0)
+        },
+        onComplete: () => {
+          console.log('Zoom animation complete - experience started!')
+        }
+      })
+      
+      console.log('Starting zoom animation...')
+    }
+  }
+
   function handleResize() {
     if (camera && renderer) {
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
       renderer.setSize(window.innerWidth, window.innerHeight)
+      
+      // Only render if experience has started
+      if (isExperienceStarted && renderer && scene && camera) {
+        renderer.render(scene, camera)
+      }
     }
   }
 
   function startRenderLoop() {
     function animate() {
       animationId = requestAnimationFrame(animate)
+      
+      // Only render if experience has started
+      if (!isExperienceStarted) return
+      
       const time = performance.now() * 0.001
 
       // Update terrain
@@ -168,12 +263,18 @@
         artCrystal.update(time, camera.position, mousePosition)
       }
 
-      // Cinematic camera orbit around the crystal
-      const radius = 6
-      camera.position.x = Math.sin(time * 0.05) * radius + mousePosition.x * 0.5
-      camera.position.z = Math.cos(time * 0.05) * radius + mousePosition.y * 0.5
-      camera.position.y = 2 + Math.sin(time * 0.03) * 0.5
-      camera.lookAt(0, 0.5, 0) // Look at the crystal
+      // Only do cinematic orbit after zoom animation is complete
+      if (gsap.isTweening(camera.position)) {
+        // During zoom animation, just look at crystal
+        camera.lookAt(0, 0.5, 0)
+      } else {
+        // Cinematic camera orbit around the crystal
+        const radius = 6
+        camera.position.x = Math.sin(time * 0.05) * radius + mousePosition.x * 0.5
+        camera.position.z = Math.cos(time * 0.05) * radius + mousePosition.y * 0.5
+        camera.position.y = 2 + Math.sin(time * 0.03) * 0.5
+        camera.lookAt(0, 0.5, 0) // Look at the crystal
+      }
 
       // Render
       if (renderer && scene && camera) {
@@ -190,6 +291,10 @@
     
     window.removeEventListener('mousemove', handleMouseMove)
     window.removeEventListener('resize', handleResize)
+    window.removeEventListener('touchstart', handleTouchStart)
+    window.removeEventListener('touchmove', handleTouchMove)
+    window.removeEventListener('touchend', handleTouchEnd)
+    window.removeEventListener('startZoomAnimation', handleZoomAnimation)
     
     if (renderer) {
       renderer.dispose()

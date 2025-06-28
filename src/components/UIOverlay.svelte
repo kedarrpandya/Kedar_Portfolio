@@ -63,7 +63,7 @@
   <div class="status-section">
     <div class="status-indicator">
       <div class="status-dot"></div>
-      <div class="status-text">Available for Projects</div>
+      <div class="status-text">Available for Full-time / Contract /Project Roles</div>
     </div>
   </div>
 </div>

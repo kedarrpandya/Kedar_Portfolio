@@ -250,7 +250,7 @@
     <!-- Stats Grid -->
     <div class="stats-grid" class:visible>
       <div class="stat-card">
-        <div class="stat-number">6+</div>
+        <div class="stat-number">3+</div>
         <div class="stat-label">Years Experience</div>
       </div>
       <div class="stat-card">

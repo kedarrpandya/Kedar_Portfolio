@@ -1,21 +1,73 @@
 import App from './App.svelte'
 import './styles/global.css'
 
-// Performance monitoring
-const app = new App({
-  target: document.getElementById('app')
-})
+let app
+let sceneInitialized = false
 
-// Remove loading screen once app is mounted
-window.addEventListener('load', () => {
+// Initialize app but keep loading screen
+function initializeApp() {
+  if (!app) {
+    app = new App({
+      target: document.getElementById('app')
+    })
+  }
+}
+
+// Handle click to enter
+function handleClickToEnter() {
+  const loadingScreen = document.getElementById('loadingScreen')
+  if (!loadingScreen) return
+  
+  // Add fade out animation
+  loadingScreen.classList.add('fade-out')
+  
+  // Initialize scene with zoom animation
   setTimeout(() => {
-    const loadingScreen = document.querySelector('.loading-screen')
-    if (loadingScreen) {
-      loadingScreen.style.opacity = '0'
-      loadingScreen.style.transition = 'opacity 0.5s ease'
-      setTimeout(() => loadingScreen.remove(), 500)
-    }
-  }, 1000)
+    loadingScreen.remove()
+    
+    // Trigger zoom animation
+    triggerZoomAnimation()
+    
+    console.log('Entered 3D experience with zoom animation')
+  }, 500)
+}
+
+// Trigger zoom animation for the crystal scene
+function triggerZoomAnimation() {
+  // Dispatch custom event for scene to handle zoom
+  window.dispatchEvent(new CustomEvent('startZoomAnimation'))
+  
+  // Also trigger scene initialization
+  sceneInitialized = true
+}
+
+// Setup click to enter functionality
+window.addEventListener('DOMContentLoaded', () => {
+  // Initialize app immediately (but keep loading screen)
+  initializeApp()
+  
+  // Setup click handler for loading screen
+  const loadingScreen = document.getElementById('loadingScreen')
+  if (loadingScreen) {
+    // Handle click
+    loadingScreen.addEventListener('click', handleClickToEnter)
+    
+    // Handle touch for mobile
+    loadingScreen.addEventListener('touchstart', (e) => {
+      e.preventDefault()
+      handleClickToEnter()
+    }, { passive: false })
+    
+    // Handle keyboard (Enter/Space)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        handleClickToEnter()
+      }
+    })
+    
+    console.log('Click to enter setup complete')
+  }
 })
 
 export default app 

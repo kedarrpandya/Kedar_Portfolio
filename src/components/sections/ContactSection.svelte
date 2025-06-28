@@ -10,31 +10,38 @@
   const contactInfo = [
     { 
       label: 'Email', 
-      value: data.email, 
+      value: data.personal.email, 
       icon: '✉', 
-      link: `mailto:${data.email}`,
+      link: `mailto:${data.personal.email}`,
       color: '#64B5F6'
     },
     { 
       label: 'Phone', 
-      value: data.phone, 
+      value: data.personal.phone, 
       icon: '📱', 
-      link: `tel:${data.phone}`,
+      link: `tel:${data.personal.phone}`,
       color: '#81C784'
     },
     { 
       label: 'Location', 
-      value: data.location, 
+      value: data.personal.location, 
       icon: '📍', 
-      link: `https://maps.google.com/?q=${data.location}`,
+      link: `https://maps.google.com/?q=${encodeURIComponent(data.personal.location)}`,
       color: '#FFB74D'
     },
     { 
       label: 'LinkedIn', 
-      value: data.linkedin, 
+      value: 'linkedin.com/in/kedarrpandya', 
       icon: '💼', 
-      link: data.linkedin,
+      link: data.personal.linkedin,
       color: '#4DB6AC'
+    },
+    { 
+      label: 'GitHub', 
+      value: 'github.com/kedarrpandya', 
+      icon: '🔗', 
+      link: data.personal.github,
+      color: '#9C27B0'
     }
   ];
 
@@ -71,7 +78,7 @@
   <div class="section-content">
     <div class="header-area" class:visible>
       <h2 class="section-title">Let's Build Something Amazing</h2>
-      <p class="section-subtitle">Ready to turn your ideas into reality? I'm just a message away.</p>
+      <p class="section-subtitle">Ready to turn your data into insights? Let's collaborate on your next project!</p>
     </div>
     
     <div class="contact-container">
@@ -177,7 +184,7 @@
     <div class="signature" class:visible>
       <div class="signature-line"></div>
       <div class="signature-text">
-        Available for freelance opportunities • Response within 24 hours
+        Available for Data Analytics & BI / Softaware Development Projects • Response within 24 hours
       </div>
       <div class="signature-line"></div>
     </div>
