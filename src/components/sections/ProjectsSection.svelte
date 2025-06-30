@@ -55,11 +55,18 @@
     if (expandedProjects.has(project.id)) {
       return project.longDescription || project.description;
     }
+    // Truncate to show "..." if text is too long
+    const maxLength = 120; // Adjust this value as needed
+    if (project.description.length > maxLength) {
+      return project.description.substring(0, maxLength) + "...";
+    }
     return project.description;
   }
 
   function shouldShowReadMore(project) {
-    return project.longDescription && project.longDescription !== project.description;
+    const maxLength = 120; // Same value as in getDisplayDescription
+    return project.description.length > maxLength || 
+           (project.longDescription && project.longDescription !== project.description);
   }
 </script>
 
@@ -434,12 +441,28 @@
   }
   
   .metric {
-    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     min-height: 50px;
+  }
+
+  .metric:nth-child(1) {
+    /* Year - Left aligned */
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .metric:nth-child(2) {
+    /* Duration - Right aligned */
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .metric:nth-child(3) {
+    /* Team - Center aligned */
+    align-items: center;
+    text-align: center;
   }
   
   .metric-label {
@@ -648,6 +671,26 @@
     .metric {
       min-height: 45px;
     }
+
+    /* Mobile: Year (left), Duration (right), Team spans both columns center */
+    .metric:nth-child(1) {
+      /* Year - Left aligned */
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .metric:nth-child(2) {
+      /* Duration - Right aligned */
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .metric:nth-child(3) {
+      /* Team - Center aligned, spans both columns */
+      grid-column: 1 / -1;
+      align-items: center;
+      text-align: center;
+    }
     
     .metric-label {
       font-size: 0.65rem;
@@ -737,6 +780,23 @@
     
     .metric {
       min-height: 48px;
+    }
+
+    /* Small devices: Year (left), Duration (right), Team spans both columns center */
+    .metric:nth-child(1) {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .metric:nth-child(2) {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .metric:nth-child(3) {
+      grid-column: 1 / -1;
+      align-items: center;
+      text-align: center;
     }
     
     .scroll-controls {
