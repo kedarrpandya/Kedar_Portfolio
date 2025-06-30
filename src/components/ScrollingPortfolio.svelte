@@ -70,19 +70,7 @@
 
 
 
-<!-- Navigation Dots -->
-<nav class="scroll-nav">
-  {#each sections as section, index}
-    <button
-      class="nav-dot"
-      class:active={currentSection === index}
-      on:click={() => scrollToSection(index)}
-      title={section.title}
-    >
-      <span class="nav-label">{section.title}</span>
-    </button>
-  {/each}
-</nav>
+<!-- Navigation dots removed - now handled by UIOverlay right-side navigation -->
 
 <!-- Progress Bar -->
 <div class="progress-bar">
@@ -194,64 +182,7 @@
     scroll-snap-type: y mandatory;
   }
 
-  /* Navigation */
-  .scroll-nav {
-    position: fixed;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  /* Mobile: Hide navigation on very small screens */
-  @media (max-width: 480px) {
-    .scroll-nav {
-      right: 1rem;
-      gap: 0.8rem;
-    }
-  }
-
-  .nav-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(183, 186, 197, 0.3);
-    border: 2px solid rgba(183, 186, 197, 0.5);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .nav-dot:hover,
-  .nav-dot.active {
-    background: #b6bac5;
-    border-color: #b6bac5;
-    transform: scale(1.2);
-  }
-
-  .nav-label {
-    position: absolute;
-    right: 20px;
-    background: rgba(56, 62, 78, 0.9);
-    color: #b6bac5;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  .nav-dot:hover .nav-label {
-    opacity: 1;
-  }
+  /* Navigation styles removed - handled by UIOverlay */
 
   /* Progress Bar */
   .progress-bar {
@@ -587,16 +518,7 @@
       font-size: 0.7rem;
     }
     
-    .scroll-nav {
-      right: 0.5rem;
-      gap: 0.6rem;
-    }
-    
-    .nav-dot {
-      width: 4px;
-      height: 4px;
-      border-width: 1px;
-    }
+    /* Navigation styles removed */
     
     .progress-bar {
       height: 2px;
@@ -840,22 +762,11 @@
   
   /* Touch device optimizations */
   @media (hover: none) and (pointer: coarse) {
-    .nav-dot {
-      width: 16px;
-      height: 16px;
-      border-width: 3px;
-    }
-    
     .contact-links a {
       min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    
-    /* Remove hover effects on touch devices */
-    .nav-dot:hover {
-      transform: none;
     }
     
     .contact-item a:hover,

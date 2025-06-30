@@ -27,10 +27,7 @@
     appState.toggleMenu()
   }
 
-  function toggleSound() {
-    // Sound toggle functionality
-    console.log('Sound toggled')
-  }
+  // Sound toggle function removed - not used
 </script>
 
 <!-- Glass Panel - Top Left -->
@@ -106,14 +103,7 @@
   </div>
 </div>
 
-<!-- Bottom Right - Sound Control -->
-<div class="sound-control" on:click={toggleSound}>
-  <div class="sound-icon">
-    <div class="sound-line"></div>
-    <div class="sound-line"></div>
-    <div class="sound-line"></div>
-  </div>
-</div>
+<!-- Sound control removed - unused functionality -->
 
 <!-- Performance Monitor (Development)
 <div class="performance-monitor" bind:this={performanceElement}>
@@ -357,46 +347,7 @@
 
 
 
-  /* Sound Control - Bottom Right */
-  .sound-control {
-    position: fixed;
-    bottom: 30px;
-    right: 40px;
-    width: 40px;
-    height: 40px;
-    z-index: 100;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: auto;
-    transition: opacity 0.3s ease;
-  }
-
-  .sound-control:hover {
-    opacity: 0.7;
-  }
-
-  .sound-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .sound-line {
-    width: 20px;
-    height: 2px;
-    background: #ffffff;
-    transition: all 0.3s ease;
-  }
-
-  .sound-line:nth-child(2) {
-    width: 15px;
-  }
-
-  .sound-line:nth-child(3) {
-    width: 12px;
-  }
+  /* Sound control styles removed - functionality not used */
 
   /* Performance Monitor */
   .performance-monitor {
