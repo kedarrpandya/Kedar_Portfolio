@@ -18,7 +18,11 @@
   let animationId
   let mousePosition = { x: 0, y: 0 }
   let isExperienceStarted = false
+  let isZoomComplete = false
   let initialCameraDistance = 50 // Start far away for zoom effect
+  
+  // Orbit center - starts at origin, moves to zoom end position after animation
+  let orbitCenter = { x: 0, y: 2, z: 0 }
 
   onMount(async () => {
     try {
@@ -213,6 +217,11 @@
           camera.lookAt(0, 0.5, 0)
         },
         onComplete: () => {
+          // Set the final orbit center to the zoom end position
+          orbitCenter.x = -4
+          orbitCenter.y = 3
+          orbitCenter.z = 7
+          isZoomComplete = true
           console.log('Zoom animation complete - experience started!')
         }
       })
@@ -263,12 +272,23 @@
         artCrystal.update(time, camera.position, mousePosition)
       }
 
-      // Only do cinematic orbit after zoom animation is complete
+      // Handle camera movement based on animation state
       if (gsap.isTweening(camera.position)) {
         // During zoom animation, just look at crystal
         camera.lookAt(0, 0.5, 0)
+      } else if (isZoomComplete) {
+        // After zoom: subtle orbit around the final zoom position
+        const orbitRadius = 1.2 // Much smaller orbit radius to stay close
+        const baseX = orbitCenter.x
+        const baseY = orbitCenter.y
+        const baseZ = orbitCenter.z
+        
+        camera.position.x = baseX + Math.sin(time * 0.02) * orbitRadius + mousePosition.x * 0.3
+        camera.position.z = baseZ + Math.cos(time * 0.02) * orbitRadius + mousePosition.y * 0.3
+        camera.position.y = baseY + Math.sin(time * 0.015) * 0.3
+        camera.lookAt(0, 0.5, 0) // Still look at the crystal
       } else {
-        // Cinematic camera orbit around the crystal
+        // Default cinematic camera orbit around the crystal (fallback)
         const radius = 6
         camera.position.x = Math.sin(time * 0.05) * radius + mousePosition.x * 0.5
         camera.position.z = Math.cos(time * 0.05) * radius + mousePosition.y * 0.5
