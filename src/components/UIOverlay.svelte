@@ -76,60 +76,33 @@
   </div>
 </div>
 
-<!-- Creative Background Elements for Large Screens -->
-<div class="creative-background">
-  <!-- Floating Particles -->
-  <div class="floating-particles">
-    {#each Array(20) as _, i}
-      <div class="particle" style="--delay: {i * 0.2}s; --x: {Math.random() * 100}%; --y: {Math.random() * 100}%"></div>
-    {/each}
-  </div>
-  
-  <!-- Geometric Grid -->
-  <div class="geometric-grid">
-    {#each Array(8) as _, i}
-      <div class="grid-line vertical" style="--index: {i}"></div>
-    {/each}
-    {#each Array(6) as _, i}
-      <div class="grid-line horizontal" style="--index: {i}"></div>
-    {/each}
-  </div>
-  
-  <!-- Data Visualization Overlays -->
-  <div class="data-viz left">
-    <div class="data-label">Performance Metrics</div>
-    <div class="data-bars">
-      {#each [85, 92, 78, 96, 88] as value, i}
-        <div class="data-bar" style="--height: {value}%; --delay: {i * 0.1}s">
-          <div class="bar-fill"></div>
-          <div class="bar-value">{value}%</div>
-        </div>
-      {/each}
+<!-- Right Side Navigation Panel -->
+<div class="right-navigation">
+  <div class="nav-dots">
+    <div class="nav-dot active" data-section="hero">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">Home</div>
     </div>
-  </div>
-  
-  <div class="data-viz right">
-    <div class="data-label">System Status</div>
-    <div class="status-grid">
-      {#each ['SQL', 'Python', 'Tableau', 'React', 'AWS'] as tech, i}
-        <div class="status-item" style="--delay: {i * 0.15}s">
-          <div class="status-indicator active"></div>
-          <span>{tech}</span>
-        </div>
-      {/each}
+    <div class="nav-dot" data-section="about">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">About</div>
     </div>
-  </div>
-  
-  <!-- Animated Connections -->
-  <div class="connection-lines">
-    <svg class="connections-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <path class="connection-path" d="M 10,20 Q 50,40 90,30" stroke="rgba(183, 186, 197, 0.3)" stroke-width="0.5" fill="none">
-        <animate attributeName="stroke-dasharray" values="0,200;100,200;200,200" dur="3s" repeatCount="indefinite"/>
-      </path>
-      <path class="connection-path" d="M 20,70 Q 40,20 80,60" stroke="rgba(183, 186, 197, 0.2)" stroke-width="0.3" fill="none">
-        <animate attributeName="stroke-dasharray" values="0,150;75,150;150,150" dur="4s" repeatCount="indefinite"/>
-      </path>
-    </svg>
+    <div class="nav-dot" data-section="experience">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">Experience</div>
+    </div>
+    <div class="nav-dot" data-section="projects">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">Projects</div>
+    </div>
+    <div class="nav-dot" data-section="skills">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">Skills</div>
+    </div>
+    <div class="nav-dot" data-section="contact">
+      <div class="dot-indicator"></div>
+      <div class="dot-label">Contact</div>
+    </div>
   </div>
 </div>
 
@@ -924,271 +897,89 @@
     }
   }
 
-  /* Creative Background Elements */
-  .creative-background {
+  /* Right Side Navigation */
+  .right-navigation {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 1;
-    overflow: hidden;
-  }
-
-  /* Floating Particles */
-  .floating-particles {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-
-  .particle {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: rgba(183, 186, 197, 0.4);
-    border-radius: 50%;
-    left: var(--x);
-    top: var(--y);
-    animation: float 8s infinite ease-in-out;
-    animation-delay: var(--delay);
-  }
-
-  @keyframes float {
-    0%, 100% { 
-      transform: translateY(0px) translateX(0px);
-      opacity: 0.4;
-    }
-    25% { 
-      transform: translateY(-20px) translateX(10px);
-      opacity: 0.8;
-    }
-    50% { 
-      transform: translateY(-10px) translateX(-15px);
-      opacity: 0.6;
-    }
-    75% { 
-      transform: translateY(-30px) translateX(5px);
-      opacity: 0.7;
-    }
-  }
-
-  /* Geometric Grid */
-  .geometric-grid {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0.15;
-  }
-
-  .grid-line {
-    position: absolute;
-    background: linear-gradient(90deg, transparent, rgba(183, 186, 197, 0.3), transparent);
-  }
-
-  .grid-line.vertical {
-    width: 1px;
-    height: 100%;
-    left: calc(10% + var(--index) * 10%);
-    animation: pulseVertical 4s infinite ease-in-out;
-    animation-delay: calc(var(--index) * 0.2s);
-  }
-
-  .grid-line.horizontal {
-    height: 1px;
-    width: 100%;
-    top: calc(15% + var(--index) * 12%);
-    animation: pulseHorizontal 5s infinite ease-in-out;
-    animation-delay: calc(var(--index) * 0.3s);
-  }
-
-  @keyframes pulseVertical {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.4; }
-  }
-
-  @keyframes pulseHorizontal {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.3; }
-  }
-
-  /* Data Visualization Overlays */
-  .data-viz {
-    position: absolute;
+    right: 40px;
     top: 50%;
     transform: translateY(-50%);
-    width: 120px;
-    opacity: 0.8;
-    animation: slideInData 1.5s ease-out;
+    z-index: 100;
+    pointer-events: all;
   }
 
-  .data-viz.left {
-    left: 30px;
-  }
-
-  .data-viz.right {
-    right: 30px;
-  }
-
-  .data-label {
-    font-size: 10px;
-    color: rgba(183, 186, 197, 0.9);
-    margin-bottom: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .data-bars {
-    display: flex;
-    gap: 8px;
-    height: 80px;
-    align-items: flex-end;
-  }
-
-  .data-bar {
-    flex: 1;
-    height: var(--height);
-    background: rgba(183, 186, 197, 0.2);
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-    animation: growBar 1.5s ease-out;
-    animation-delay: var(--delay);
-    animation-fill-mode: both;
-  }
-
-  .bar-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background: linear-gradient(to top, rgba(183, 186, 197, 0.6), rgba(183, 186, 197, 0.3));
-    animation: fillBar 2s ease-out;
-    animation-delay: var(--delay);
-    animation-fill-mode: both;
-  }
-
-  .bar-value {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 8px;
-    color: rgba(183, 186, 197, 0.8);
-    font-weight: 600;
-  }
-
-  .status-grid {
+  .nav-dots {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 20px;
   }
 
-  .status-item {
+  .nav-dot {
+    position: relative;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 9px;
-    color: rgba(183, 186, 197, 0.8);
-    animation: fadeInStatus 1s ease-out;
-    animation-delay: var(--delay);
-    animation-fill-mode: both;
+    gap: 15px;
+    padding: 8px 0;
+    transition: all 0.3s ease;
   }
 
-  .status-indicator {
-    width: 6px;
-    height: 6px;
+  .dot-indicator {
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: #4ade80;
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
-    animation: pulse 2s infinite;
+    background: rgba(183, 186, 197, 0.4);
+    border: 1px solid rgba(183, 186, 197, 0.6);
+    transition: all 0.3s ease;
+    position: relative;
   }
 
-  .status-indicator.active {
-    background: #4ade80;
+  .nav-dot.active .dot-indicator {
+    background: rgba(183, 186, 197, 0.9);
+    box-shadow: 0 0 15px rgba(183, 186, 197, 0.6);
+    border-color: rgba(183, 186, 197, 0.9);
   }
 
-  /* Connection Lines */
-  .connection-lines {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0.6;
+  .nav-dot:hover .dot-indicator {
+    background: rgba(183, 186, 197, 0.7);
+    transform: scale(1.2);
   }
 
-  .connections-svg {
-    width: 100%;
-    height: 100%;
+  .dot-label {
+    font-size: 11px;
+    color: rgba(183, 186, 197, 0.7);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    white-space: nowrap;
   }
 
-  /* Animations */
-  @keyframes slideInData {
-    from {
-      opacity: 0;
-      transform: translateY(-50%) translateX(-20px);
-    }
-    to {
-      opacity: 0.8;
-      transform: translateY(-50%) translateX(0);
-    }
+  .nav-dot:hover .dot-label,
+  .nav-dot.active .dot-label {
+    opacity: 1;
+    transform: translateX(0);
+    color: rgba(183, 186, 197, 0.9);
   }
 
-  @keyframes growBar {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--height);
-    }
-  }
-
-  @keyframes fillBar {
-    from {
-      transform: scaleY(0);
-    }
-    to {
-      transform: scaleY(1);
-    }
-  }
-
-  @keyframes fadeInStatus {
-    from {
-      opacity: 0;
-      transform: translateX(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes pulse {
-    0%, 100% {
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
-    }
-    50% {
-      box-shadow: 0 0 15px rgba(74, 222, 128, 0.8);
-    }
-  }
-
-  /* Hide creative elements on smaller screens */
-  @media (max-width: 1024px) {
-    .creative-background {
+  /* Responsive Design for Right Navigation */
+  @media (max-width: 1200px) {
+    .right-navigation {
       display: none;
     }
   }
 
-  /* Reduce opacity on medium screens */
-  @media (min-width: 1024px) and (max-width: 1440px) {
-    .creative-background {
-      opacity: 0.7;
+  @media (min-width: 1200px) and (max-width: 1440px) {
+    .right-navigation {
+      right: 25px;
     }
     
-    .data-viz {
-      opacity: 0.6;
+    .nav-dots {
+      gap: 18px;
+    }
+    
+    .dot-label {
+      font-size: 10px;
     }
   }
 </style> 
