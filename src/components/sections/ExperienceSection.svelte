@@ -235,7 +235,7 @@
     display: flex;
     gap: 3rem;
     margin: 4rem 0;
-    padding: 2rem;
+    padding: 4rem 2rem 2rem 2rem;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -901,7 +901,7 @@
     
     .timeline-container {
       gap: 2rem;
-      padding: 2rem 1rem;
+      padding: 4rem 1rem 2rem 1rem;
     }
     
     .timeline-node {
@@ -945,6 +945,7 @@
     
     .timeline-container {
       gap: 1.5rem;
+      padding: 4rem 2rem 2rem 2rem;
     }
     
     .node-content {
@@ -972,6 +973,7 @@
   @media (min-width: 992px) and (max-width: 1199.98px) {
     .timeline-container {
       gap: 1.8rem;
+      padding: 4rem 2rem 2rem 2rem;
     }
     
     .node-content {
