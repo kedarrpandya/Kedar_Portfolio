@@ -317,6 +317,176 @@ export const portfolioData = {
         "/project4-hackathon.png",
         "/project4-system.png"
       ]
+    },
+    {
+      id: 5,
+      title: "ShareMe App",
+      subtitle: "Social Media Platform",
+      description: "A social media web application built with React and Sanity, allowing users to share and save pictures.",
+      longDescription: "A modern social media platform that enables users to share, discover, and save images with an intuitive interface. Built with React for the frontend and Sanity as the backend content management system, providing real-time updates and seamless user experience.",
+      technologies: ["React", "Sanity", "JavaScript", "CSS", "HTML"],
+      category: "Web Development",
+      featured: true,
+      year: "2023",
+      duration: "2 months",
+      team: "Solo Project",
+      achievements: [
+        "Built responsive social media interface with React components",
+        "Integrated Sanity CMS for real-time content management",
+        "Implemented user authentication and image upload functionality",
+        "Created interactive save and share features for enhanced user engagement"
+      ],
+      metrics: {
+        "Components Built": "20+",
+        "Real-time Updates": "Yes",
+        "Image Processing": "Optimized",
+        "User Experience": "Seamless"
+      },
+      links: {
+        demo: "#",
+        github: "#",
+        documentation: "#"
+      },
+      images: [
+        "/project5-shareme.png",
+        "/project5-gallery.png"
+      ]
+    },
+    {
+      id: 6,
+      title: "E-Commerce Platform",
+      subtitle: "Django Web Application",
+      description: "Kedar's first web application, developed using Django-Python. It functions as an e-shop for buying items and includes an admin panel for managing products and categories.",
+      longDescription: "A comprehensive e-commerce solution built with Django framework, featuring a complete online shopping experience with product catalog, shopping cart, order management, and administrative controls. This project marked the beginning of Kedar's web development journey.",
+      technologies: ["Django", "Python", "SQLite", "HTML", "CSS"],
+      category: "Web Development",
+      featured: true,
+      year: "2022",
+      duration: "3 months",
+      team: "Solo Project",
+      achievements: [
+        "Developed full-stack e-commerce platform from scratch",
+        "Implemented user authentication and shopping cart functionality",
+        "Created comprehensive admin panel for product and category management",
+        "Built responsive frontend with dynamic product listings"
+      ],
+      metrics: {
+        "Product Management": "Full CRUD",
+        "User Authentication": "Secure",
+        "Admin Features": "Complete",
+        "First Project": "Success"
+      },
+      links: {
+        demo: "#",
+        github: "#",
+        documentation: "#"
+      },
+      images: [
+        "/project6-ecommerce.png",
+        "/project6-admin.png"
+      ]
+    },
+    {
+      id: 7,
+      title: "Netflix Clone",
+      subtitle: "React Streaming Platform",
+      description: "A recreation of Netflix using ReactJs and Postman API, where users can watch trailers or behind-the-scenes content for series.",
+      longDescription: "A pixel-perfect Netflix clone built with React, featuring dynamic content loading, trailer streaming, and behind-the-scenes content. Integrated with external APIs to provide real-time movie and series data with an authentic Netflix user experience.",
+      technologies: ["React", "JavaScript", "Postman API", "CSS", "HTML"],
+      category: "Web Development",
+      featured: true,
+      year: "2023",
+      duration: "2 months",
+      team: "Solo Project",
+      achievements: [
+        "Recreated Netflix interface with pixel-perfect accuracy",
+        "Integrated Postman API for dynamic content loading",
+        "Implemented video trailer streaming functionality",
+        "Built responsive carousel and grid layouts for content display"
+      ],
+      metrics: {
+        "API Integration": "Seamless",
+        "Video Streaming": "HD Quality",
+        "UI Accuracy": "95%+",
+        "Performance": "Optimized"
+      },
+      links: {
+        demo: "#",
+        github: "#",
+        documentation: "#"
+      },
+      images: [
+        "/project7-netflix.png",
+        "/project7-player.png"
+      ]
+    },
+    {
+      id: 8,
+      title: "Spotify Refreshed",
+      subtitle: "Modern Music Platform",
+      description: "A unique music platform created with ReactJS, Rapid API, and Tailwind CSS framework.",
+      longDescription: "A modern interpretation of Spotify with enhanced UI/UX design, built using React and styled with Tailwind CSS. Integrated with Rapid API for music streaming and discovery, featuring a clean, responsive interface with improved user experience.",
+      technologies: ["React", "Rapid API", "Tailwind CSS", "JavaScript", "HTML"],
+      category: "Web Development",
+      featured: true,
+      year: "2023",
+      duration: "2 months",
+      team: "Solo Project",
+      achievements: [
+        "Designed modern UI with Tailwind CSS framework",
+        "Integrated Rapid API for music streaming and search",
+        "Built responsive music player with advanced controls",
+        "Implemented playlist creation and management features"
+      ],
+      metrics: {
+        "Music Streaming": "High Quality",
+        "UI Design": "Modern",
+        "API Calls": "Optimized",
+        "User Experience": "Enhanced"
+      },
+      links: {
+        demo: "#",
+        github: "#",
+        documentation: "#"
+      },
+      images: [
+        "/project8-spotify.png",
+        "/project8-player.png"
+      ]
+    },
+    {
+      id: 9,
+      title: "Data Analysis with Tableau",
+      subtitle: "Business Intelligence Dashboard",
+      description: "A data analysis project involving data cleaning, filtration, and ETL using MySQL and Tableau, culminating in an attractive, responsive, and interactive dashboard.",
+      longDescription: "A comprehensive business intelligence solution that transforms raw data into actionable insights through advanced ETL processes, data cleaning, and interactive visualization. The project demonstrates end-to-end data analysis capabilities from database management to dashboard creation.",
+      technologies: ["Tableau", "MySQL", "SQL", "ETL", "Data Visualization"],
+      category: "Data Analytics",
+      featured: true,
+      year: "2023",
+      duration: "3 months",
+      team: "Solo Project",
+      achievements: [
+        "Performed comprehensive data cleaning and transformation using MySQL",
+        "Built complex ETL pipelines for data processing and integration",
+        "Created interactive Tableau dashboards with advanced visualizations",
+        "Implemented responsive design for cross-platform accessibility"
+      ],
+      metrics: {
+        "Data Processed": "1M+ Records",
+        "ETL Efficiency": "90%+",
+        "Dashboard Views": "Interactive",
+        "Insights Generated": "Actionable"
+      },
+      links: {
+        demo: "#",
+        github: "#",
+        documentation: "#"
+      },
+      images: [
+        "/project9-tableau.png",
+        "/project9-dashboard.png"
+      ]
     }
   ],
 
