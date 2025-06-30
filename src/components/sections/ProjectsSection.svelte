@@ -8,6 +8,7 @@
   let scrollContainer;
   let selectedProject = null;
   let isVisible = false;
+  let expandedProjects = new Set(); // Track expanded project descriptions
   
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -39,6 +40,26 @@
   
   function scrollRight() {
     scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+  }
+
+  function toggleDescription(projectId) {
+    if (expandedProjects.has(projectId)) {
+      expandedProjects.delete(projectId);
+    } else {
+      expandedProjects.add(projectId);
+    }
+    expandedProjects = expandedProjects; // Trigger reactivity
+  }
+
+  function getDisplayDescription(project) {
+    if (expandedProjects.has(project.id)) {
+      return project.longDescription || project.description;
+    }
+    return project.description;
+  }
+
+  function shouldShowReadMore(project) {
+    return project.longDescription && project.longDescription !== project.description;
   }
 </script>
 
@@ -88,8 +109,19 @@
             <div class="card-content">
               <h3 class="project-title">{project.title}</h3>
               <p class="project-subtitle">{project.subtitle}</p>
-              <p class="project-description project-description-mobile">{project.description.substring(0, 100)}...</p>
-          <p class="project-description project-description-desktop">{project.description}</p>
+              
+              <!-- Project Description with Read More -->
+              <div class="project-description-container">
+                <p class="project-description">{getDisplayDescription(project)}</p>
+                {#if shouldShowReadMore(project)}
+                  <button 
+                    class="read-more-btn"
+                    on:click|stopPropagation={() => toggleDescription(project.id)}
+                  >
+                    {expandedProjects.has(project.id) ? 'Show Less' : 'Read More'}
+                  </button>
+                {/if}
+              </div>
               
               <!-- Project Metrics -->
               <div class="project-metrics">
@@ -136,12 +168,6 @@
                   </a>
                 {/if}
               </div>
-              <!-- <button class="view-details-btn">
-                View Details
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/>
-                </svg>
-              </button> -->
             </div>
           </div>
         {/each}
@@ -370,31 +396,37 @@
     font-weight: 500;
   }
   
+  .project-description-container {
+    margin-bottom: 1.5rem;
+  }
+
   .project-description {
     color: rgba(183, 186, 197, 0.7);
     font-size: 0.9rem;
     line-height: 1.5;
-    margin-bottom: 1.5rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    margin-bottom: 0.5rem;
   }
-  
-  /* Mobile/Desktop content switching */
-  .project-description-mobile {
-    display: none;
+
+  .read-more-btn {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    transition: color 0.3s ease;
   }
-  
-  .project-description-desktop {
-    display: block;
+
+  .read-more-btn:hover {
+    color: #66BB6A;
   }
   
   /* Project Metrics */
   .project-metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.8rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: rgba(183, 186, 197, 0.05);
@@ -403,6 +435,11 @@
   
   .metric {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
   }
   
   .metric-label {
@@ -411,13 +448,17 @@
     color: rgba(183, 186, 197, 0.6);
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
   }
   
   .metric-value {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #b6bac5;
-    font-weight: 500;
+    font-weight: 600;
+    line-height: 1.2;
+    word-wrap: break-word;
+    text-align: center;
   }
   
   /* Tech Stack */
@@ -587,17 +628,14 @@
     .project-description {
       font-size: 0.8rem;
       line-height: 1.4;
+    }
+
+    .project-description-container {
       margin-bottom: 1rem;
-      -webkit-line-clamp: 2;
     }
     
-    /* Show mobile content, hide desktop content */
-    .project-description-mobile {
-      display: block;
-    }
-    
-    .project-description-desktop {
-      display: none;
+    .read-more-btn {
+      font-size: 0.75rem;
     }
     
     .project-metrics {
@@ -607,12 +645,17 @@
       padding: 0.8rem;
     }
     
+    .metric {
+      min-height: 45px;
+    }
+    
     .metric-label {
       font-size: 0.65rem;
+      margin-bottom: 0.2rem;
     }
     
     .metric-value {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
     
     .tech-stack {
@@ -687,18 +730,13 @@
       font-size: 0.85rem;
     }
     
-    /* Show mobile content, hide desktop content */
-    .project-description-mobile {
-      display: block;
-    }
-    
-    .project-description-desktop {
-      display: none;
-    }
-    
     .project-metrics {
       grid-template-columns: 1fr 1fr;
       gap: 0.8rem;
+    }
+    
+    .metric {
+      min-height: 48px;
     }
     
     .scroll-controls {
