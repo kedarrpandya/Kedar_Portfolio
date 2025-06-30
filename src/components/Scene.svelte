@@ -17,12 +17,9 @@
   let terrain, volumetricLight, artCrystal, particles
   let animationId
   let mousePosition = { x: 0, y: 0 }
-  let isExperienceStarted = false
-  let isZoomComplete = false
-  let initialCameraDistance = 50 // Start far away for zoom effect
-  
-  // Orbit center - starts at origin, moves to zoom end position after animation
-  let orbitCenter = { x: 0, y: 2, z: 0 }
+  // Simple state management with smooth zoom animation
+  let isSceneReady = false
+  let hasZoomAnimationStarted = false
 
   onMount(async () => {
     try {
@@ -31,7 +28,16 @@
       await initScene()
       await initObjects()
       setupScrollAnimations()
+      
+      // Mark scene as ready and start render loop
+      isSceneReady = true
       startRenderLoop()
+      
+      // Do initial render so crystal appears immediately
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera)
+        console.log('Initial render complete - crystal should be visible')
+      }
       
       // Mouse tracking
       window.addEventListener('mousemove', handleMouseMove)
@@ -45,8 +51,7 @@
       // Listen for zoom animation trigger
       window.addEventListener('startZoomAnimation', handleZoomAnimation)
       
-      // Don't start render loop yet - wait for user interaction
-      console.log('3D scene initialized, waiting for click to enter...')
+      console.log('3D scene initialized and rendering started')
       
     } catch (error) {
       console.error('Failed to initialize scene:', error)
@@ -67,10 +72,10 @@
     scene.background = new THREE.Color(0x383e4e) // Your dark color
     scene.fog = new THREE.Fog(0x383e4e, 10, 50)
 
-    // Camera - start far away for zoom effect
+    // Camera - start zoomed out for nice animation
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    camera.position.set(-4 * initialCameraDistance/10, 3 * initialCameraDistance/10, 7 * initialCameraDistance/10)
-    camera.lookAt(0, 0.5, 0)
+    camera.position.set(-20, 15, 35) // Start far away
+    camera.lookAt(0, 1.5, 0)
 
     // Renderer with mobile-optimized settings
     renderer = new THREE.WebGLRenderer({
@@ -200,13 +205,10 @@
   }
 
   function handleZoomAnimation() {
-    if (!isExperienceStarted) {
-      isExperienceStarted = true
+    if (!hasZoomAnimationStarted) {
+      hasZoomAnimationStarted = true
       
-      // Start the render loop
-      startRenderLoop()
-      
-      // Animate camera zoom in with GSAP
+      // Simple smooth zoom animation with GSAP
       gsap.to(camera.position, {
         duration: 2.5,
         x: -4,
@@ -214,19 +216,14 @@
         z: 7,
         ease: "power2.out",
         onUpdate: () => {
-          camera.lookAt(0, 0.5, 0)
+          camera.lookAt(0, 1.5, 0)
         },
         onComplete: () => {
-          // Set the final orbit center to the zoom end position
-          orbitCenter.x = -4
-          orbitCenter.y = 3
-          orbitCenter.z = 7
-          isZoomComplete = true
-          console.log('Zoom animation complete - experience started!')
+          console.log('Zoom animation complete!')
         }
       })
       
-      console.log('Starting zoom animation...')
+      console.log('Starting smooth zoom animation...')
     }
   }
 
@@ -236,8 +233,8 @@
       camera.updateProjectionMatrix()
       renderer.setSize(window.innerWidth, window.innerHeight)
       
-      // Only render if experience has started
-      if (isExperienceStarted && renderer && scene && camera) {
+      // Always render on resize
+      if (renderer && scene && camera) {
         renderer.render(scene, camera)
       }
     }
@@ -247,56 +244,52 @@
     function animate() {
       animationId = requestAnimationFrame(animate)
       
-      // Only render if experience has started
-      if (!isExperienceStarted) return
-      
       const time = performance.now() * 0.001
 
-      // Update terrain
+      // Always update objects for smooth rendering
       if (terrain && terrain.update) {
         terrain.update(time)
       }
 
-      // Update spectacular particles
       if (particles && particles.update) {
         particles.update(time, mousePosition)
       }
 
-      // Update volumetric lighting
       if (volumetricLight && volumetricLight.update) {
         volumetricLight.update(time, camera.position)
       }
 
-      // Update art crystal with mouse interaction
       if (artCrystal && artCrystal.update) {
         artCrystal.update(time, camera.position, mousePosition)
-      }
-
-      // Handle camera movement based on animation state
-      if (gsap.isTweening(camera.position)) {
-        // During zoom animation, just look at crystal
-        camera.lookAt(0, 0.5, 0)
-      } else if (isZoomComplete) {
-        // After zoom: subtle orbit around the final zoom position
-        const orbitRadius = 1.2 // Much smaller orbit radius to stay close
-        const baseX = orbitCenter.x
-        const baseY = orbitCenter.y
-        const baseZ = orbitCenter.z
         
-        camera.position.x = baseX + Math.sin(time * 0.02) * orbitRadius + mousePosition.x * 0.3
-        camera.position.z = baseZ + Math.cos(time * 0.02) * orbitRadius + mousePosition.y * 0.3
-        camera.position.y = baseY + Math.sin(time * 0.015) * 0.3
-        camera.lookAt(0, 0.5, 0) // Still look at the crystal
-      } else {
-        // Default cinematic camera orbit around the crystal (fallback)
-        const radius = 6
-        camera.position.x = Math.sin(time * 0.05) * radius + mousePosition.x * 0.5
-        camera.position.z = Math.cos(time * 0.05) * radius + mousePosition.y * 0.5
-        camera.position.y = 2 + Math.sin(time * 0.03) * 0.5
-        camera.lookAt(0, 0.5, 0) // Look at the crystal
+        // Debug: ensure crystal is always visible
+        if (artCrystal.mesh) {
+          artCrystal.mesh.visible = true
+          if (artCrystal.mesh.material && artCrystal.mesh.material.uniforms) {
+            // Ensure material opacity is reasonable
+            if (artCrystal.mesh.material.uniforms.uTime) {
+              // Crystal is updating properly
+            }
+          }
+        }
       }
 
-      // Render
+      // Camera movement - smooth and simple
+      if (isSceneReady) {
+        if (gsap.isTweening(camera.position)) {
+          // During zoom animation, just look at crystal
+          camera.lookAt(0, 1.5, 0)
+        } else {
+          // After animation: gentle orbit around crystal
+          const radius = 6
+          camera.position.x = Math.sin(time * 0.05) * radius + mousePosition.x * 0.5
+          camera.position.z = Math.cos(time * 0.05) * radius + mousePosition.y * 0.5
+          camera.position.y = 2 + Math.sin(time * 0.03) * 0.5
+          camera.lookAt(0, 1.5, 0) // Look at crystal
+        }
+      }
+
+      // Always render the scene
       if (renderer && scene && camera) {
         renderer.render(scene, camera)
       }
