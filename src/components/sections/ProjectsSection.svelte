@@ -8,7 +8,7 @@
   let scrollContainer;
   let selectedProject = null;
   let isVisible = false;
-  let expandedProjects = new Set(); // Track expanded project descriptions
+
   
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -42,32 +42,7 @@
     scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
   }
 
-  function toggleDescription(projectId) {
-    if (expandedProjects.has(projectId)) {
-      expandedProjects.delete(projectId);
-    } else {
-      expandedProjects.add(projectId);
-    }
-    expandedProjects = expandedProjects; // Trigger reactivity
-  }
 
-  function getDisplayDescription(project) {
-    if (expandedProjects.has(project.id)) {
-      return project.longDescription || project.description;
-    }
-    // Truncate to show "..." if text is too long
-    const maxLength = 120; // Adjust this value as needed
-    if (project.description.length > maxLength) {
-      return project.description.substring(0, maxLength) + "...";
-    }
-    return project.description;
-  }
-
-  function shouldShowReadMore(project) {
-    const maxLength = 120; // Same value as in getDisplayDescription
-    return project.description.length > maxLength || 
-           (project.longDescription && project.longDescription !== project.description);
-  }
 </script>
 
 <div class="projects-section" bind:this={projectsContainer}>
@@ -107,9 +82,6 @@
               <div class="project-category" style="background: {getCategoryColor(project.category)}20; color: {getCategoryColor(project.category)}">
                 {project.category}
               </div>
-              {#if project.featured}
-                <div class="featured-badge">★ FEATURED</div>
-              {/if}
             </div>
             
             <!-- Project Content -->
@@ -117,16 +89,25 @@
               <h3 class="project-title">{project.title}</h3>
               <p class="project-subtitle">{project.subtitle}</p>
               
-              <!-- Project Description with Read More -->
+              <!-- Project Description -->
               <div class="project-description-container">
-                <p class="project-description">{getDisplayDescription(project)}</p>
-                {#if shouldShowReadMore(project)}
-                  <button 
-                    class="read-more-btn"
-                    on:click|stopPropagation={() => toggleDescription(project.id)}
-                  >
-                    {expandedProjects.has(project.id) ? 'Show Less' : 'Read More'}
-                  </button>
+                <p class="project-description">{project.description}</p>
+                
+                <!-- GitHub Link -->
+                {#if project.github || project.links?.github}
+                  <div class="github-link-container">
+                    <a 
+                      href={project.github || project.links?.github || '#'} 
+                      target="_blank" 
+                      class="github-link"
+                      on:click|stopPropagation
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                      </svg>
+                      View on GitHub
+                    </a>
+                  </div>
                 {/if}
               </div>
               
@@ -372,16 +353,7 @@
     text-transform: uppercase;
   }
   
-  .featured-badge {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
-    color: #000;
-    padding: 0.3rem 0.6rem;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    animation: sparkle 2s ease-in-out infinite;
-  }
+
   
   /* Card Content */
   .card-content {
@@ -414,19 +386,38 @@
     margin-bottom: 0.5rem;
   }
 
-  .read-more-btn {
-    background: none;
-    border: none;
-    color: #4CAF50;
-    font-size: 0.8rem;
-    cursor: pointer;
-    padding: 0;
-    text-decoration: underline;
-    transition: color 0.3s ease;
+  .github-link-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.8rem;
   }
 
-  .read-more-btn:hover {
-    color: #66BB6A;
+  .github-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(45deg, rgba(183, 186, 197, 0.1), rgba(183, 186, 197, 0.05));
+    border: 1px solid rgba(183, 186, 197, 0.2);
+    border-radius: 12px;
+    color: #b6bac5;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .github-link:hover {
+    background: linear-gradient(45deg, rgba(183, 186, 197, 0.2), rgba(183, 186, 197, 0.1));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #d0d4db;
+  }
+
+  .github-link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
   
   /* Project Metrics */
@@ -599,10 +590,7 @@
     }
   }
   
-  @keyframes sparkle {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
+
   
   /* Mobile Responsive Design */
   
@@ -657,8 +645,14 @@
       margin-bottom: 1rem;
     }
     
-    .read-more-btn {
-      font-size: 0.75rem;
+    .github-link {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    .github-link svg {
+      width: 14px;
+      height: 14px;
     }
     
     .project-metrics {
