@@ -96,14 +96,30 @@
     <div class="about-mobile">
       <div class="mobile-about-card">
         <div class="mobile-about-content">
-          <p class="mobile-about-text">{portfolioData.personal.summary.substring(0, 160)}...</p>
+          <p class="mobile-about-text">
+            {#if aboutExpanded}
+              {portfolioData.personal.summary}
+            {:else}
+              {portfolioData.personal.summary.substring(0, 160)}...
+            {/if}
+          </p>
+          
+          {#if !aboutExpanded}
+            <button class="read-more-btn" on:click={toggleAbout}>
+              Read More
+            </button>
+          {:else}
+            <button class="read-more-btn" on:click={toggleAbout}>
+              Show Less
+            </button>
+          {/if}
           
           <div class="mobile-quick-contact">
             <a href="mailto:{portfolioData.personal.email}" class="mobile-contact-btn">
-              📧 Email Me
+              📧 Email
             </a>
             <a href="tel:{portfolioData.personal.phone}" class="mobile-contact-btn">
-              📞 Call Me
+              📞 Call
             </a>
           </div>
           
@@ -554,65 +570,96 @@
       font-size: 1rem;
       line-height: 1.6;
       color: rgba(183, 186, 197, 0.9);
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
       text-align: left;
+    }
+    
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: #b6bac5;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-bottom: 1.5rem;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      text-align: left;
+      width: auto;
+    }
+    
+    .read-more-btn:hover {
+      color: white;
+      text-shadow: 0 0 8px rgba(183, 186, 197, 0.5);
     }
     
     .mobile-quick-contact {
       display: flex;
-      gap: 1rem;
+      gap: 0.8rem;
       margin-bottom: 2rem;
+      padding: 0 0.5rem;
     }
     
     .mobile-contact-btn {
       flex: 1;
-      padding: 1rem;
+      padding: 0.9rem 0.7rem;
       background: linear-gradient(135deg, #383e4e, #b6bac5);
       color: white;
       text-decoration: none;
-      border-radius: 15px;
+      border-radius: 12px;
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       transition: all 0.3s ease;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .mobile-contact-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
     
     .mobile-stats {
       display: flex;
-      justify-content: space-around;
-      gap: 1rem;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0 0.3rem;
     }
     
     .mobile-stat {
       text-align: center;
-      padding: 1rem;
+      padding: 0.8rem 0.4rem;
       background: rgba(183, 186, 197, 0.05);
-      border-radius: 15px;
+      border-radius: 12px;
       flex: 1;
       border: 1px solid rgba(183, 186, 197, 0.1);
+      min-width: 0;
+      overflow: hidden;
     }
     
     .mobile-stat-number {
       display: block;
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       font-weight: 700;
       color: #b6bac5;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.2rem;
       text-shadow: 0 0 10px rgba(183, 186, 197, 0.3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .mobile-stat-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: rgba(183, 186, 197, 0.7);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       font-weight: 500;
+      line-height: 1.2;
     }
   }
   

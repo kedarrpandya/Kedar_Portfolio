@@ -257,11 +257,11 @@
         <div class="stat-number">50+</div>
         <div class="stat-label">Projects Completed</div>
       </div>
-      <div class="stat-card stat-card-mobile-hidden">
+      <div class="stat-card">
         <div class="stat-number">15+</div>
         <div class="stat-label">Technologies</div>
       </div>
-      <div class="stat-card stat-card-mobile-hidden">
+      <div class="stat-card">
         <div class="stat-number">95%</div>
         <div class="stat-label">Client Satisfaction</div>
       </div>
@@ -714,24 +714,43 @@
     }
     
     .stats-grid {
-      display: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
     }
     
     .stat-card {
-      padding: 1.2rem;
+      padding: 1.5rem 1rem;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(15px);
+      border-radius: 15px;
+      border: 1px solid rgba(183, 186, 197, 0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
     
     .stat-number {
-      font-size: 1.8rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #b6bac5;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 15px rgba(183, 186, 197, 0.5);
+      line-height: 1;
     }
     
     .stat-label {
-      font-size: 0.8rem;
-    }
-    
-    /* Hide extra stat cards on mobile - show only first 2 */
-    .stat-card-mobile-hidden {
-      display: none;
+      font-size: 0.75rem;
+      color: rgba(183, 186, 197, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      line-height: 1.3;
     }
   }
   

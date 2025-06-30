@@ -6,6 +6,7 @@
   let experienceContainer;
   let selectedExperience = 0;
   let isVisible = false;
+  let expandedCards = {}; // Track which mobile cards are expanded
   
   onMount(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -25,6 +26,11 @@
   
   function selectExperience(index) {
     selectedExperience = index;
+  }
+  
+  function toggleCardExpanded(index) {
+    expandedCards[index] = !expandedCards[index];
+    expandedCards = expandedCards; // Trigger reactivity
   }
 </script>
 
@@ -59,44 +65,63 @@
       {/each}
     </div>
     
-    <!-- Mobile Experience Cards -->
-    <div class="mobile-experience-grid">
-      {#each data.experience as exp, index}
-        <div class="mobile-exp-card" style="--color: {exp.color}">
-          <div class="mobile-card-header">
-            <div class="mobile-company-badge" style="background: {exp.color}">
-              {exp.company.split(' ')[0][0]}{exp.company.split(' ')[1] ? exp.company.split(' ')[1][0] : ''}
-            </div>
-            <div class="mobile-exp-info">
-              <h3 class="mobile-role">{exp.role}</h3>
-              <p class="mobile-company">{exp.company}</p>
-              <span class="mobile-duration">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</span>
-            </div>
-            {#if exp.current}
-              <div class="mobile-current-badge">NOW</div>
-            {/if}
-          </div>
-          
-          <div class="mobile-card-body">
-            <p class="mobile-description">{exp.description.substring(0, 120)}...</p>
-            
-            <div class="mobile-impact" style="border-left: 3px solid {exp.color}">
-              💡 {exp.impact}
-            </div>
-            
-            <div class="mobile-tech-tags">
-              {#each exp.technologies.slice(0, 3) as tech}
-                <span class="mobile-tech-tag" style="background: {exp.color}20; color: {exp.color}">
-                  {tech}
-                </span>
-              {/each}
-              {#if exp.technologies.length > 3}
-                <span class="mobile-tech-more">+{exp.technologies.length - 3}</span>
+    <!-- Mobile Experience Cards - Horizontal Scroll -->
+    <div class="mobile-experience-scroll-wrapper">
+      <div class="mobile-experience-grid">
+        {#each data.experience as exp, index}
+          <div class="mobile-exp-card" style="--color: {exp.color}">
+            <div class="mobile-card-header">
+              <div class="mobile-company-badge" style="background: {exp.color}">
+                {exp.company.split(' ')[0][0]}{exp.company.split(' ')[1] ? exp.company.split(' ')[1][0] : ''}
+              </div>
+              <div class="mobile-exp-info">
+                <h3 class="mobile-role">{exp.role}</h3>
+                <p class="mobile-company">{exp.company}</p>
+                <span class="mobile-duration">{exp.startDate} - {exp.current ? 'Present' : exp.endDate}</span>
+              </div>
+              {#if exp.current}
+                <div class="mobile-current-badge">NOW</div>
               {/if}
             </div>
+            
+            <div class="mobile-card-body">
+              <div class="mobile-description-container">
+                <p class="mobile-description">
+                  {#if expandedCards[index]}
+                    {exp.description}
+                  {:else}
+                    {exp.description.substring(0, 120)}...
+                  {/if}
+                </p>
+                {#if exp.description.length > 120}
+                  <button 
+                    class="read-more-btn" 
+                    style="color: {exp.color}"
+                    on:click={() => toggleCardExpanded(index)}
+                  >
+                    {expandedCards[index] ? 'Show Less' : 'Read More'}
+                  </button>
+                {/if}
+              </div>
+              
+              <div class="mobile-impact" style="border-left: 3px solid {exp.color}">
+                💡 {exp.impact}
+              </div>
+              
+              <div class="mobile-tech-tags">
+                {#each exp.technologies.slice(0, 3) as tech}
+                  <span class="mobile-tech-tag" style="background: {exp.color}20; color: {exp.color}">
+                    {tech}
+                  </span>
+                {/each}
+                {#if exp.technologies.length > 3}
+                  <span class="mobile-tech-more">+{exp.technologies.length - 3}</span>
+                {/if}
+              </div>
+            </div>
           </div>
-        </div>
-      {/each}
+        {/each}
+      </div>
     </div>
     
     <!-- Experience Details Card -->
@@ -208,9 +233,32 @@
   .timeline-container {
     position: relative;
     display: flex;
-    justify-content: space-between;
+    gap: 3rem;
     margin: 4rem 0;
-    padding: 2rem 0;
+    padding: 2rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(183, 186, 197, 0.3) transparent;
+  }
+  
+  .timeline-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .timeline-container::-webkit-scrollbar-track {
+    background: rgba(183, 186, 197, 0.1);
+    border-radius: 3px;
+  }
+  
+  .timeline-container::-webkit-scrollbar-thumb {
+    background: rgba(183, 186, 197, 0.3);
+    border-radius: 3px;
+  }
+  
+  .timeline-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(183, 186, 197, 0.5);
   }
   
   .timeline-line {
@@ -226,6 +274,8 @@
     z-index: 2;
     opacity: 0;
     transform: translateY(30px);
+    flex-shrink: 0;
+    min-width: 150px;
   }
   
   .timeline-node.visible {
@@ -518,6 +568,13 @@
     to { box-shadow: 0 0 20px #4CAF50, 0 0 30px #4CAF50; }
   }
   
+  /* Hide mobile experience cards on desktop */
+  @media (min-width: 1024px) {
+    .mobile-experience-scroll-wrapper {
+      display: none;
+    }
+  }
+
   /* Mobile Responsive Design */
   
   /* Extra Small Devices (phones, 576px and down) */
@@ -612,27 +669,64 @@
       display: none;
     }
     
-    /* Show mobile experience grid */
-    .mobile-experience-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    /* Show mobile experience grid - horizontal scroll */
+    .mobile-experience-scroll-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 15px;
       margin: 2rem 0;
     }
     
+    .mobile-experience-grid {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    
+    .mobile-experience-grid::-webkit-scrollbar {
+      display: none;
+    }
+    
     .mobile-exp-card {
+      flex: 0 0 300px;
+      min-height: 320px;
+      height: auto;
       background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(183, 186, 197, 0.1);
       border-radius: 15px;
-      padding: 1.2rem;
+      padding: 1.5rem;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     
     .mobile-exp-card:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    .mobile-exp-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--color);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .mobile-exp-card:hover::before {
+      opacity: 1;
     }
     
     .mobile-card-header {
@@ -643,14 +737,14 @@
     }
     
     .mobile-company-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: white;
       flex-shrink: 0;
     }
@@ -660,21 +754,21 @@
     }
     
     .mobile-role {
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 500;
       color: #b6bac5;
-      margin: 0 0 0.2rem 0;
-      line-height: 1.2;
+      margin: 0 0 0.3rem 0;
+      line-height: 1.3;
     }
     
     .mobile-company {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: rgba(183, 186, 197, 0.8);
-      margin: 0 0 0.3rem 0;
+      margin: 0 0 0.4rem 0;
     }
     
     .mobile-duration {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: rgba(183, 186, 197, 0.6);
     }
     
@@ -689,23 +783,49 @@
     }
     
     .mobile-card-body {
-      space-y: 1rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .mobile-description-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
     
     .mobile-description {
-      font-size: 0.85rem;
-      line-height: 1.4;
+      font-size: 0.9rem;
+      line-height: 1.5;
       color: rgba(183, 186, 197, 0.8);
-      margin-bottom: 0.8rem;
+      margin: 0;
+    }
+    
+    .read-more-btn {
+      align-self: flex-start;
+      background: none;
+      border: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.2rem 0;
+      text-decoration: underline;
+      transition: opacity 0.2s ease;
+      opacity: 0.8;
+    }
+    
+    .read-more-btn:hover {
+      opacity: 1;
     }
     
     .mobile-impact {
       background: rgba(183, 186, 197, 0.05);
-      padding: 0.6rem 0.8rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
       color: #b6bac5;
-      margin-bottom: 0.8rem;
+      line-height: 1.4;
     }
     
     .mobile-tech-tags {
@@ -780,13 +900,12 @@
     }
     
     .timeline-container {
-      flex-wrap: wrap;
-      justify-content: center;
       gap: 2rem;
+      padding: 2rem 1rem;
     }
     
     .timeline-node {
-      flex: 0 0 auto;
+      min-width: 140px;
     }
     
     .node-content {

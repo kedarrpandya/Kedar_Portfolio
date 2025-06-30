@@ -11,6 +11,73 @@
   
   let performanceElement
   let currentFPS = 120
+  let activeSection = 0
+  let scrollY = 0
+  let innerHeight = 0
+
+  // Navigation sections that match the actual sections in ScrollingPortfolio
+  const navSections = [
+    { id: 'hero', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'projects', label: 'Projects' },
+    { id: 'skills', label: 'Skills' },
+    { id: 'contact', label: 'Contact' }
+  ]
+
+  // Calculate active section based on scroll position
+  $: {
+    if (typeof window !== 'undefined' && scrollY !== undefined && innerHeight) {
+      updateActiveSection();
+    }
+  }
+  
+  function updateActiveSection() {
+    const sections = navSections.map(section => document.getElementById(section.id));
+    let newActiveSection = 0;
+    
+    // Check each section to see which one is currently in view
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const element = sections[i];
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        // If section top is above or at the viewport top (accounting for some offset)
+        if (rect.top <= 100) {
+          newActiveSection = i;
+          break;
+        }
+      }
+    }
+    
+    if (newActiveSection !== activeSection) {
+      activeSection = newActiveSection;
+      console.log('Active section updated to:', navSections[activeSection]?.label);
+    }
+  }
+
+  // Function to scroll to a specific section
+  function scrollToSection(sectionId) {
+    const targetElement = document.getElementById(sectionId);
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+
+  // Handle navigation dot click
+  function handleNavClick(sectionId) {
+    scrollToSection(sectionId);
+  }
+
+  // Handle keyboard navigation
+  function handleNavKeydown(event, sectionId) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      scrollToSection(sectionId);
+    }
+  }
 
   // Subscribe to FPS updates
   const unsubscribeFPS = fps.subscribe(value => {
@@ -18,6 +85,12 @@
   })
 
   onMount(() => {
+    // Force initial calculation
+    setTimeout(() => {
+      scrollY = window.scrollY;
+      updateActiveSection();
+    }, 100);
+    
     return () => {
       unsubscribeFPS()
     }
@@ -29,6 +102,8 @@
 
   // Sound toggle function removed - not used
 </script>
+
+<svelte:window bind:scrollY bind:innerHeight />
 
 <!-- Glass Panel - Top Left -->
 <div class="glass-panel">
@@ -76,30 +151,18 @@
 <!-- Right Side Navigation Panel -->
 <div class="right-navigation">
   <div class="nav-dots">
-    <div class="nav-dot active" data-section="hero">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">Home</div>
-    </div>
-    <div class="nav-dot" data-section="about">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">About</div>
-    </div>
-    <div class="nav-dot" data-section="experience">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">Experience</div>
-    </div>
-    <div class="nav-dot" data-section="projects">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">Projects</div>
-    </div>
-    <div class="nav-dot" data-section="skills">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">Skills</div>
-    </div>
-    <div class="nav-dot" data-section="contact">
-      <div class="dot-indicator"></div>
-      <div class="dot-label">Contact</div>
-    </div>
+    {#each navSections as section, index}
+      <button 
+        class="nav-dot {activeSection === index ? 'active' : ''}" 
+        data-section={section.id}
+        on:click={() => handleNavClick(section.id)}
+        on:keydown={(event) => handleNavKeydown(event, section.id)}
+        aria-label="Navigate to {section.label} section"
+      >
+        <div class="dot-indicator"></div>
+        <div class="dot-label">{section.label}</div>
+      </button>
+    {/each}
   </div>
 </div>
 
@@ -114,18 +177,18 @@
 {#if $isMenuOpen}
   <div class="menu-overlay">
     <div class="menu-content">
-      <div class="menu-item" on:click={() => appState.setCurrentSection(0)}>
+      <button class="menu-item" on:click={() => appState.setCurrentSection(0)}>
         HOME
-      </div>
-      <div class="menu-item" on:click={() => appState.setCurrentSection(1)}>
+      </button>
+      <button class="menu-item" on:click={() => appState.setCurrentSection(1)}>
         ABOUT
-      </div>
-      <div class="menu-item" on:click={() => appState.setCurrentSection(2)}>
+      </button>
+      <button class="menu-item" on:click={() => appState.setCurrentSection(2)}>
         PROJECTS
-      </div>
-      <div class="menu-item" on:click={() => appState.setCurrentSection(3)}>
+      </button>
+      <button class="menu-item" on:click={() => appState.setCurrentSection(3)}>
         CONTACT
-      </div>
+      </button>
     </div>
   </div>
 {/if}
@@ -137,7 +200,8 @@
     top: 40px;
     left: 50%;
     transform: translateX(-50%);
-    width: 380px;
+    width: 500px;
+    max-width: 95vw;
     z-index: 100;
     pointer-events: none;
     animation: fadeInText 2s ease 0.5s both;
@@ -150,6 +214,7 @@
     border: none;
     box-shadow: none;
     padding: 20px;
+    overflow: visible;
   }
 
   .glass-panel::before {
@@ -221,26 +286,40 @@
   /* Profile Section */
   .profile-section {
     margin-bottom: 20px;
+    width: 100%;
+    overflow: visible;
+    text-align: center;
   }
 
   .hero-name {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 900;
     color: #ffffff;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: 2px;
     text-shadow: 
       0 0 30px rgba(255, 255, 255, 0.6),
       2px 2px 4px rgba(0, 0, 0, 0.5);
+    line-height: 1.2;
+    white-space: normal;
+    overflow: visible;
+    width: 100%;
+    display: block;
+    word-wrap: break-word;
   }
 
   .hero-title {
     font-size: 16px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
-    margin-bottom: 4px;
-    letter-spacing: 1px;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    display: block;
   }
 
   .hero-subtitle {
@@ -397,11 +476,21 @@
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 10px 0;
+    background: none;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
   }
 
   .menu-item:hover {
     color: #cccccc;
     transform: translateX(10px);
+  }
+
+  .menu-item:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
   }
 
   /* Animations */
@@ -461,20 +550,22 @@
   /* Extra Small Devices (phones, 480px and down) */
   @media (max-width: 480px) {
     .glass-panel {
+      position: absolute;
       top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100vw - 30px);
-      max-width: 350px;
-      padding: 18px 15px;
+      left: 10px;
+      right: 10px;
+      width: auto;
+      max-width: none;
+      padding: 20px 15px;
       border-radius: 0;
       background: none;
       backdrop-filter: none;
       text-align: center;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
+      overflow: visible;
     }
     
     .profile-section {
@@ -482,7 +573,8 @@
       text-align: center;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
+      flex: 1;
     }
     
     .glass-header {
@@ -510,29 +602,41 @@
     }
     
     .hero-name {
-      font-size: 18px;
-      margin-bottom: 4px;
-      letter-spacing: -0.5px;
+      font-size: 28px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
       font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-      line-height: 1.1;
+      text-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+      line-height: 1.2;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      overflow: visible;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 0 0 auto;
     }
     
     .hero-title {
-      font-size: 10px;
-      margin-bottom: 0;
+      font-size: 14px;
+      margin-bottom: 4px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.3;
-      letter-spacing: -0.3px;
+      color: rgba(255, 255, 255, 0.95);
+      line-height: 1.4;
+      letter-spacing: 0.2px;
       text-align: center;
       word-wrap: break-word;
-      max-width: 100%;
+      overflow-wrap: break-word;
+      width: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      white-space: normal;
+      flex: 0 0 auto;
     }
     
     .hero-subtitle {
@@ -592,11 +696,12 @@
   /* Medium Mobile Devices (iPhone 12 Pro, etc - 481px - 575px) */
   @media (min-width: 481px) and (max-width: 575.98px) {
     .glass-panel {
+      position: absolute;
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
       width: calc(100vw - 30px);
-      max-width: 350px;
+      max-width: 450px;
       padding: 18px 15px;
       border-radius: 0;
       background: none;
@@ -606,6 +711,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      overflow: visible;
     }
     
     .profile-section {
@@ -641,29 +747,37 @@
     }
     
     .hero-name {
-      font-size: 18px;
-      margin-bottom: 4px;
-      letter-spacing: -0.5px;
+      font-size: 28px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
       font-weight: 900;
       color: #ffffff;
       text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
       line-height: 1.1;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      overflow: visible;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: 100%;
+      display: block;
+      max-width: 100%;
     }
     
     .hero-title {
-      font-size: 10px;
-      margin-bottom: 0;
+      font-size: 14px;
+      margin-bottom: 4px;
       font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(255, 255, 255, 0.95);
       line-height: 1.3;
-      letter-spacing: -0.3px;
+      letter-spacing: 0.2px;
       text-align: center;
       word-wrap: break-word;
+      overflow-wrap: break-word;
       max-width: 100%;
+      width: 100%;
+      display: block;
+      white-space: normal;
     }
     
     .hero-subtitle {
@@ -851,17 +965,31 @@
   /* Right Side Navigation */
   .right-navigation {
     position: fixed;
-    right: 40px;
+    right: 25px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 100;
     pointer-events: all;
   }
 
+  .debug-indicator {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: rgba(183, 186, 197, 0.9);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 8px;
+    white-space: nowrap;
+    border: 1px solid rgba(183, 186, 197, 0.2);
+  }
+
   .nav-dots {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    padding: 0;
   }
 
   .nav-dot {
@@ -869,68 +997,122 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 0;
     padding: 8px 0;
+    background: none;
+    border: none;
     transition: all 0.3s ease;
+    border-radius: 0;
+    min-width: auto;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
   }
 
   .dot-indicator {
-    width: 8px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
-    background: rgba(183, 186, 197, 0.4);
-    border: 1px solid rgba(183, 186, 197, 0.6);
-    transition: all 0.3s ease;
+    background: rgba(183, 186, 197, 0.3);
+    border: none;
+    transition: all 0.4s ease;
     position: relative;
+    flex-shrink: 0;
   }
 
   .nav-dot.active .dot-indicator {
-    background: rgba(183, 186, 197, 0.9);
-    box-shadow: 0 0 15px rgba(183, 186, 197, 0.6);
-    border-color: rgba(183, 186, 197, 0.9);
+    background: rgba(183, 186, 197, 1);
+    transform: scale(2.5);
+    box-shadow: 0 0 8px rgba(183, 186, 197, 0.6);
   }
 
   .nav-dot:hover .dot-indicator {
-    background: rgba(183, 186, 197, 0.7);
-    transform: scale(1.2);
+    background: rgba(183, 186, 197, 0.6);
+    transform: scale(1.5);
   }
 
   .dot-label {
-    font-size: 11px;
-    color: rgba(183, 186, 197, 0.7);
-    font-weight: 500;
-    letter-spacing: 0.5px;
+    font-size: 9px;
+    color: rgba(183, 186, 197, 0.6);
+    font-weight: 400;
+    letter-spacing: 0.3px;
     opacity: 0;
-    transform: translateX(-10px);
+    transform: translateX(-12px);
     transition: all 0.3s ease;
     white-space: nowrap;
+    text-transform: uppercase;
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-12px);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px 8px;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(183, 186, 197, 0.1);
   }
 
-  .nav-dot:hover .dot-label,
-  .nav-dot.active .dot-label {
+  .nav-dot:hover .dot-label {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(-50%) translateX(0);
     color: rgba(183, 186, 197, 0.9);
   }
 
+  .nav-dot:focus {
+    outline: 2px solid rgba(183, 186, 197, 0.5);
+    outline-offset: 2px;
+  }
+
   /* Responsive Design for Right Navigation */
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
     .right-navigation {
       display: none;
     }
   }
 
-  @media (min-width: 1200px) and (max-width: 1440px) {
-    .right-navigation {
-      right: 25px;
+  @media (min-width: 1400px) {
+    .nav-dots {
+      gap: 14px;
     }
     
-    .nav-dots {
-      gap: 18px;
+    .nav-dot {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .dot-indicator {
+      width: 3px;
+      height: 3px;
     }
     
     .dot-label {
-      font-size: 10px;
+      font-size: 8px;
+      right: 20px;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .right-navigation {
+      right: 30px;
+    }
+    
+    .nav-dots {
+      gap: 16px;
+    }
+    
+    .nav-dot {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .dot-indicator {
+      width: 4px;
+      height: 4px;
+    }
+    
+    .dot-label {
+      font-size: 9px;
+      right: 25px;
     }
   }
 </style> 

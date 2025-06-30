@@ -25,7 +25,7 @@ export const portfolioData = {
       endDate: "Apr 2025",
       current: true,
       type: "full-time",
-      description: "Leading BI initiatives and data optimization for agricultural technology solutions.",
+      description: "Leading BI initiatives and data optimization for agricultural technology solutions. Developing comprehensive analytics frameworks to support greenhouse operations, implementing data-driven decision making processes, and creating scalable reporting infrastructure for agricultural insights.",
       achievements: [
         "Wrote optimized SQL queries to clean, filter, and structure data for visualization and reporting",
         "Built and deployed interactive Tableau dashboards to track greenhouse productivity and workforce KPIs",
@@ -45,7 +45,7 @@ export const portfolioData = {
       endDate: "Mar 2025",
       current: false,
       type: "freelance",
-      description: "Providing data analytics and BI solutions across travel and beverage industries.",
+      description: "Providing comprehensive data analytics and business intelligence solutions across travel and beverage industries. Specializing in ETL pipeline development, advanced dashboard creation, and strategic business insights that drive operational efficiency and revenue growth.",
       achievements: [
         "Gathered requirements, designed ETL workflows in Python, and modeled data for performance dashboards",
         "Built interactive Tableau and Power BI reports for travel and beverage industry clients, improving decision-making",
@@ -65,7 +65,7 @@ export const portfolioData = {
       endDate: "Oct 2023",
       current: false,
       type: "full-time",
-      description: "Automated cloud testing processes and managed security infrastructure at scale.",
+      description: "Automated cloud testing processes and managed security infrastructure at enterprise scale. Focused on building robust DevOps pipelines, implementing monitoring solutions, and optimizing release workflows to enhance system reliability and security posture across global teams.",
       achievements: [
         "Created automation scripts in Python and Bash to streamline cloud testing and release processes",
         "Managed and monitored SQL logs for anomaly detection and incident tracking across test environments",
@@ -85,7 +85,7 @@ export const portfolioData = {
       endDate: "Jun 2023",
       current: false,
       type: "internship",
-      description: "Supporting endpoint security operations and threat detection systems.",
+      description: "Supporting endpoint security operations and threat detection systems across enterprise environments. Gained hands-on experience with cybersecurity tools, vulnerability assessment procedures, and security incident response protocols while contributing to network defense initiatives.",
       achievements: [
         "Supported endpoint security tool testing and monitored logs for breach patterns and vulnerabilities",
         "Generated internal reports and dashboards tracking network defense KPIs and incidents",
@@ -105,7 +105,7 @@ export const portfolioData = {
       endDate: "Present",
       current: true,
       type: "part-time",
-      description: "Providing technical support and solutions to customers while pursuing education.",
+      description: "Providing comprehensive technical support and innovative solutions to customers while pursuing advanced education. Focusing on hardware diagnostics, software troubleshooting, and customer relationship management to deliver exceptional service experiences and drive customer satisfaction.",
       achievements: [
         "Assisted 60+ customers weekly with troubleshooting, software installations, and PC hardware upgrades",
         "Delivered tailored recommendations for personal and enterprise tech solutions using data-driven upselling",

@@ -23,25 +23,11 @@
       color: '#81C784'
     },
     { 
-      label: 'Location', 
-      value: data.personal.location, 
-      icon: '📍', 
-      link: `https://maps.google.com/?q=${encodeURIComponent(data.personal.location)}`,
-      color: '#FFB74D'
-    },
-    { 
       label: 'LinkedIn', 
-      value: 'linkedin.com/in/kedarrpandya', 
+      value: 'kedarrpandya', 
       icon: '💼', 
       link: data.personal.linkedin,
       color: '#4DB6AC'
-    },
-    { 
-      label: 'GitHub', 
-      value: 'github.com/kedarrpandya', 
-      icon: '🔗', 
-      link: data.personal.github,
-      color: '#9C27B0'
     }
   ];
 
@@ -120,55 +106,44 @@
         </div>
         
         <form class="contact-form" class:focused={isFormFocused} on:submit={handleSubmit}>
-          <div class="form-group">
-            <input 
-              type="text" 
-              id="name" 
-              required 
-              placeholder=" "
-              on:focus={() => isFormFocused = true}
-              on:blur={() => isFormFocused = false}
-            />
-            <label for="name">Your Name</label>
-            <div class="form-line"></div>
-          </div>
-          
-          <div class="form-group">
-            <input 
-              type="email" 
-              id="email" 
-              required 
-              placeholder=" "
-              on:focus={() => isFormFocused = true}
-              on:blur={() => isFormFocused = false}
-            />
-            <label for="email">Email Address</label>
-            <div class="form-line"></div>
-          </div>
-          
-          <div class="form-group">
-            <input 
-              type="text" 
-              id="subject" 
-              required 
-              placeholder=" "
-              on:focus={() => isFormFocused = true}
-              on:blur={() => isFormFocused = false}
-            />
-            <label for="subject">Subject</label>
-            <div class="form-line"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <input 
+                type="text" 
+                id="name" 
+                required 
+                placeholder=" "
+                on:focus={() => isFormFocused = true}
+                on:blur={() => isFormFocused = false}
+              />
+              <label for="name">Name</label>
+              <div class="form-line"></div>
+            </div>
+            
+            <div class="form-group">
+              <input 
+                type="email" 
+                id="email" 
+                required 
+                placeholder=" "
+                on:focus={() => isFormFocused = true}
+                on:blur={() => isFormFocused = false}
+              />
+              <label for="email">Email</label>
+              <div class="form-line"></div>
+            </div>
           </div>
           
           <div class="form-group">
             <textarea 
               id="message" 
               required 
-              rows="5" 
+              rows="4" 
               placeholder=" "
               on:focus={() => isFormFocused = true}
               on:blur={() => isFormFocused = false}
             ></textarea>
-            <label for="message">Your Message</label>
+            <label for="message">Message</label>
             <div class="form-line"></div>
           </div>
           
@@ -184,7 +159,7 @@
     <div class="signature" class:visible>
       <div class="signature-line"></div>
       <div class="signature-text">
-        Available for Data Analytics & BI / Softaware Development Projects • Response within 24 hours
+        Available for Analytics & Development Projects • Quick Response
       </div>
       <div class="signature-line"></div>
     </div>
@@ -405,6 +380,12 @@
     gap: 2rem;
   }
 
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
   .form-group {
     position: relative;
   }
@@ -563,8 +544,9 @@
     
     .contact-cards {
       order: 2;
-      grid-template-columns: 1fr;
-      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
     }
     
     .contact-form-container {
@@ -574,29 +556,43 @@
     }
     
     .contact-card {
-      padding: 1rem;
+      padding: 0.8rem;
       border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
     
     .card-content {
-      gap: 0.8rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
     }
     
     .card-icon {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      flex-shrink: 0;
     }
     
-    .card-title {
-      font-size: 1rem;
-      margin-bottom: 0.3rem;
-    }
-    
-    .card-info {
-      font-size: 0.9rem;
-    }
-    
-    .card-meta {
+    .card-label {
       font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(183, 186, 197, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .card-value {
+      font-size: 0.9rem;
+      color: #b6bac5;
+      font-weight: 400;
     }
     
     .copy-btn {
@@ -620,6 +616,11 @@
     }
     
     .contact-form {
+      gap: 1.5rem;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
       gap: 1.5rem;
     }
     
