@@ -8,6 +8,9 @@
   let scrollContainer;
   let selectedProject = null;
   let isVisible = false;
+  let activeDotIndex = 0;
+  let scrollTimeout;
+  let debouncedScrollHandler;
 
   
   onMount(() => {
@@ -23,7 +26,48 @@
       observer.observe(projectsContainer);
     }
     
-    return () => observer.disconnect();
+    // Add scroll listener to update active dot
+    if (scrollContainer) {
+      debouncedScrollHandler = () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveDot, 100);
+      };
+      scrollContainer.addEventListener('scroll', debouncedScrollHandler);
+      
+      // Ensure scroll starts at the beginning to show first card properly
+      setTimeout(() => {
+        if (scrollContainer) {
+          scrollContainer.scrollLeft = 0;
+          ensureLastCardVisible();
+          updateActiveDot();
+        }
+      }, 100);
+    }
+    
+    // Handle window resize to recalculate layout
+    const handleResize = () => {
+      if (scrollContainer) {
+        // Reset scroll position on resize to prevent issues
+        scrollContainer.style.scrollBehavior = 'auto';
+        scrollContainer.scrollLeft = 0;
+        setTimeout(() => {
+          scrollContainer.style.scrollBehavior = 'smooth';
+          ensureLastCardVisible();
+          updateActiveDot();
+        }, 50);
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      observer.disconnect();
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (scrollContainer && debouncedScrollHandler) {
+        scrollContainer.removeEventListener('scroll', debouncedScrollHandler);
+      }
+      window.removeEventListener('resize', handleResize);
+    };
   });
   
   function openProject(project) {
@@ -35,11 +79,95 @@
   }
   
   function scrollLeft() {
-    scrollContainer.scrollBy({ left: -320, behavior: 'smooth' });
+    const cardWidth = getCardWidth();
+    const gap = getGapWidth();
+    scrollContainer.scrollBy({ left: -(cardWidth + gap), behavior: 'smooth' });
   }
   
   function scrollRight() {
-    scrollContainer.scrollBy({ left: 320, behavior: 'smooth' });
+    const cardWidth = getCardWidth();
+    const gap = getGapWidth();
+    scrollContainer.scrollBy({ left: (cardWidth + gap), behavior: 'smooth' });
+  }
+  
+  function scrollToProject(index) {
+    if (scrollContainer) {
+      // Get responsive card width and gap
+      const cardWidth = getCardWidth();
+      const gap = getGapWidth();
+      const containerPadding = getPaddingWidth();
+      
+      // Calculate scroll position - account for padding and ensure proper positioning
+      let scrollPosition;
+      
+      if (index === 0) {
+        // First card - scroll to beginning
+        scrollPosition = 0;
+      } else {
+        // Other cards - calculate position
+        scrollPosition = (cardWidth + gap) * index;
+      }
+      
+      scrollContainer.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+      
+      activeDotIndex = index;
+    }
+  }
+  
+  // Update active dot based on scroll position
+  function updateActiveDot() {
+    if (scrollContainer && data.projects) {
+      const cardWidth = getCardWidth();
+      const gap = getGapWidth();
+      const scrollLeft = scrollContainer.scrollLeft;
+      
+      // Special handling for first card
+      if (scrollLeft < cardWidth / 2) {
+        activeDotIndex = 0;
+        return;
+      }
+      
+      // Calculate index for other cards
+      const adjustedScrollLeft = scrollLeft + (cardWidth / 3);
+      const newIndex = Math.floor(adjustedScrollLeft / (cardWidth + gap));
+      activeDotIndex = Math.max(0, Math.min(newIndex, data.projects.length - 1));
+    }
+  }
+  
+  function getCardWidth() {
+    const width = window.innerWidth;
+    if (width <= 575.98) return 240; // Mobile
+    if (width <= 767.98) return 260; // Small devices  
+    if (width <= 991.98) return 280; // Medium devices
+    if (width <= 1199.98) return 300; // Large devices
+    return 320; // Extra large devices
+  }
+  
+  function getGapWidth() {
+    const width = window.innerWidth;
+    if (width <= 575.98) return 16; // 1rem gap on mobile
+    if (width <= 767.98) return 24; // 1.5rem gap
+    return 32; // 2rem gap on larger screens
+  }
+  
+  function getPaddingWidth() {
+    const width = window.innerWidth;
+    if (width <= 575.98) return 24; // 1.5rem padding on mobile
+    if (width <= 767.98) return 24; // 1.5rem padding
+    return 32; // 2rem padding on larger screens
+  }
+  
+  // Ensure dots are always visible and responsive
+  function ensureLastCardVisible() {
+    if (scrollContainer && data.projects) {
+      // The ::after pseudo-element handles the trailing space
+      // Force layout recalculation to ensure proper scrolling
+      const scrollWidth = scrollContainer.scrollWidth;
+      scrollContainer.style.display = 'flex';
+    }
   }
 
 
@@ -91,24 +219,33 @@
               
               <!-- Project Description -->
               <div class="project-description-container">
-                <p class="project-description">{project.description}</p>
+                <p class="project-description">
+                  {project.description}
+                </p>
+                {#if project.description.length > 200}
+                  <button class="read-more-btn" on:click={(e) => e.stopPropagation()}>
+                    Read more
+                  </button>
+                {/if}
                 
                 <!-- GitHub Link -->
-                {#if project.github || project.links?.github}
-                  <div class="github-link-container">
-                    <a 
-                      href={project.github || project.links?.github || '#'} 
-                      target="_blank" 
-                      class="github-link"
-                      on:click|stopPropagation
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                      </svg>
-                      View on GitHub
-                    </a>
-                  </div>
-                {/if}
+                <div class="github-link-container">
+                  <a 
+                    href={project.github || project.links?.github || 'https://github.com/kedarpandya'} 
+                    target="_blank" 
+                    class="github-link"
+                    on:click={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      window.open(project.github || project.links?.github || 'https://github.com/kedarpandya', '_blank');
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                  </a>
+                </div>
               </div>
               
               <!-- Project Metrics -->
@@ -141,15 +278,21 @@
             <!-- Project Footer -->
             <div class="card-footer">
               <div class="project-links">
-                {#if project.github}
-                  <a href={project.github} target="_blank" class="project-link" on:click|stopPropagation>
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                    </svg>
-                  </a>
-                {/if}
+                <a href={project.github || 'https://github.com/kedarpandya'} target="_blank" class="project-link" on:click={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  window.open(project.github || 'https://github.com/kedarpandya', '_blank');
+                }}>
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                </a>
                 {#if project.demo}
-                  <a href={project.demo} target="_blank" class="project-link" on:click|stopPropagation>
+                  <a href={project.demo} target="_blank" class="project-link" on:click={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    window.open(project.demo, '_blank');
+                  }}>
                     <svg viewBox="0 0 24 24" fill="currentColor">
                       <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7z"/>
                     </svg>
@@ -166,7 +309,11 @@
     <div class="scroll-indicator">
       <div class="scroll-dots">
         {#each data.projects as _, index}
-          <div class="scroll-dot"></div>
+          <button 
+            class="scroll-dot {index === activeDotIndex ? 'active' : ''}"
+            on:click={() => scrollToProject(index)}
+            aria-label="Scroll to project {index + 1}"
+          ></button>
         {/each}
       </div>
     </div>
@@ -195,7 +342,7 @@
 <style>
   .projects-section {
     min-height: 100vh;
-    padding: 4rem 2rem;
+    padding: 4rem 0rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -206,11 +353,14 @@
     border: 1px solid rgba(183, 186, 197, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     position: relative;
+    overflow: visible;
   }
   
   .section-content {
     max-width: 1600px;
     width: 100%;
+    overflow: visible;
+    padding: 0 2rem;
   }
   
   .section-title {
@@ -275,18 +425,29 @@
   /* Projects Container */
   .projects-scroll-wrapper {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 20px;
+    margin: 0 -2rem;
+    padding: 0 2rem;
   }
   
   .projects-container {
     display: flex;
     gap: 2rem;
-    padding: 2rem 1rem;
+    padding: 2rem 2rem 2rem 4rem;
     overflow-x: auto;
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 4rem;
+  }
+  
+  .projects-container::after {
+    content: '';
+    flex: 0 0 2rem;
+    height: 1px;
+    min-width: 2rem;
   }
   
   .projects-container::-webkit-scrollbar {
@@ -296,6 +457,7 @@
   /* Project Cards */
   .project-card {
     flex: 0 0 300px;
+    height: 500px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(20px);
     border-radius: 20px;
@@ -307,6 +469,7 @@
     opacity: 0;
     position: relative;
     overflow: hidden;
+    scroll-snap-align: start;
   }
   
   .project-card.visible {
@@ -366,6 +529,11 @@
     margin-bottom: 0.5rem;
     font-weight: 400;
     line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 3.38rem;
   }
   
   .project-subtitle {
@@ -373,10 +541,17 @@
     font-size: 0.9rem;
     margin-bottom: 1rem;
     font-weight: 500;
+    height: 1.35rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   
   .project-description-container {
     margin-bottom: 1.5rem;
+    height: 7.5rem;
+    display: flex;
+    flex-direction: column;
   }
 
   .project-description {
@@ -384,12 +559,34 @@
     font-size: 0.9rem;
     line-height: 1.5;
     margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 5.4rem;
+    flex-shrink: 0;
+  }
+
+  .read-more-btn {
+    background: none;
+    border: none;
+    color: rgba(183, 186, 197, 0.8);
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    margin-top: 0.3rem;
+    align-self: flex-start;
+  }
+
+  .read-more-btn:hover {
+    color: #b6bac5;
   }
 
   .github-link-container {
     display: flex;
     justify-content: center;
-    margin-top: 0.8rem;
+    margin-top: auto;
   }
 
   .github-link {
@@ -571,7 +768,7 @@
   
   .scroll-dots {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
   
   .scroll-dot {
@@ -579,7 +776,27 @@
     height: 8px;
     border-radius: 50%;
     background: rgba(183, 186, 197, 0.3);
+    border: none;
+    cursor: pointer;
     transition: all 0.3s ease;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .scroll-dot:hover {
+    background: rgba(183, 186, 197, 0.5);
+    transform: scale(1.2);
+  }
+  
+  .scroll-dot.active {
+    background: rgba(183, 186, 197, 0.8);
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(183, 186, 197, 0.4);
+  }
+  
+  .scroll-dot:focus {
+    outline: 2px solid rgba(183, 186, 197, 0.6);
+    outline-offset: 2px;
   }
   
   /* Animations */
@@ -597,9 +814,18 @@
   /* Extra Small Devices (phones, 576px and down) */
   @media (max-width: 575.98px) {
     .projects-section {
-      padding: 2rem 1rem;
+      padding: 2rem 0rem;
       margin: 1rem;
       border-radius: 15px;
+    }
+    
+    .section-content {
+      padding: 0 1rem;
+    }
+    
+    .projects-scroll-wrapper {
+      margin: 0 -1rem;
+      padding: 0 1rem;
     }
     
     .section-title {
@@ -609,10 +835,11 @@
     }
     
     .projects-container {
-      padding: 1rem 0;
+      padding: 1rem 1.5rem;
       gap: 1rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
+      scroll-padding: 1.5rem;
       -webkit-overflow-scrolling: touch;
     }
     
@@ -729,20 +956,24 @@
     }
     
     .scroll-indicator {
-      margin-top: 1rem;
-    }
-    
-    .scroll-dot {
-      width: 6px;
-      height: 6px;
+      display: none;
     }
   }
   
   /* Small Devices (landscape phones, 576px - 767px) */
   @media (min-width: 576px) and (max-width: 767.98px) {
     .projects-section {
-      padding: 3rem 1.5rem;
+      padding: 3rem 0rem;
       margin: 1.5rem;
+    }
+    
+    .section-content {
+      padding: 0 1.5rem;
+    }
+    
+    .projects-scroll-wrapper {
+      margin: 0 -1.5rem;
+      padding: 0 1.5rem;
     }
     
     .section-title {
@@ -751,12 +982,14 @@
     }
     
     .projects-container {
-      padding: 1rem 0.5rem;
+      padding: 1rem 1.5rem;
       gap: 1.5rem;
+      scroll-padding: 1.5rem;
     }
     
     .project-card {
       flex: 0 0 260px;
+      scroll-snap-align: start;
     }
     
     .project-title {
@@ -806,6 +1039,7 @@
     
     .project-card {
       flex: 0 0 280px;
+      scroll-snap-align: start;
     }
     
     .projects-container {
@@ -825,6 +1059,7 @@
   @media (min-width: 992px) and (max-width: 1199.98px) {
     .project-card {
       flex: 0 0 300px;
+      scroll-snap-align: start;
     }
     
     .scroll-controls {
@@ -836,6 +1071,7 @@
   @media (min-width: 1200px) {
     .project-card {
       flex: 0 0 320px;
+      scroll-snap-align: start;
     }
   }
   
