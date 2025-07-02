@@ -17,7 +17,11 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
     "gsap": "^3.12.2",
+    "node-fetch": "^3.3.2",
     "svelte-cubed": "^0.2.1",
     "three": "^0.158.0",
     "three-mesh-bvh": "^0.7.0"

@@ -919,25 +919,20 @@
   }
 
   async function sendMessage() {
-    if (!inputMessage.trim()) return
-    
-    addMessage(inputMessage, 'user')
-    const userMsg = inputMessage.toLowerCase()
-    inputMessage = ''
-    
-    showQuickActions = false
-    isTyping.set(true)
-    
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200))
-    
-    const response = processMessage(userMsg)
-    
-    isTyping.set(false)
-    addMessage(response.text, 'bot')
-    
-    if (response.morphTo) {
-      morphToShape(response.morphTo)
+    if (!inputMessage.trim() || chatLimitReached) return;
+    addMessage(inputMessage, 'user');
+    const userMsg = inputMessage.toLowerCase();
+    inputMessage = '';
+    showQuickActions = false;
+    isTyping.set(true);
+    chatCount += 1;
+    if (chatCount >= chatLimit) {
+      chatLimitReached = true;
     }
+    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
+    const response = await processMessage(userMsg);
+    isTyping.set(false);
+    addMessage(response.text, 'bot');
   }
 
   async function handleQuickAction(action) {
@@ -947,88 +942,132 @@
     
     await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 800))
     
-    const response = processMessage(action.message.toLowerCase())
+    const response = await processMessage(action.message.toLowerCase())
     
     isTyping.set(false)
     addMessage(response.text, 'bot')
   }
 
-  function processMessage(message) {
-    const msg = message.toLowerCase()
-    
-    if (msg.includes('health') || msg.includes('climate')) {
-      return {
-        text: botResponses.projects['health-climate'],
-        morphTo: 'health-climate'
+  async function processMessage(message) {
+    // Injected portfolio data for Gemini context
+    const portfolioData = `
+Professional Summary:
+– Detail-oriented Data Scientist / Analyst with hands-on experience building ML pipelines, deploying predictive models, and translating data into business insights using Python, SQL, and modern BI tools.
+– Data Scientist with experience designing and deploying predictive ML models, including churn and LTV forecasting, using Python (scikit-learn, XGBoost), SQL, and cloud data platforms like Snowflake and BigQuery.
+– Proficient in A/B testing, dashboarding (Looker/Tableau), and lifecycle model development in Agile environments.
+– Strong collaborator with a proven track record of translating stakeholder needs into data-driven insights and deployed models.
+
+Experience:
+Great Lakes Greenhouse – University of Windsor Jan 2025 – Apr 2025
+Data Analyst (SQL & BI) Windsor, ON
+– Wrote optimized SQL queries to clean, filter, and structure data for visualization and reporting.
+– Built and deployed interactive Tableau dashboards to track greenhouse productivity and workforce KPIs.
+– Reduced manual processing by 45% by integrating dashboards directly with SQL Server.
+– Collaborated with cross-functional teams to define KPIs, validate outputs, and ensure data accuracy.
+Freelance Apr 2022 – Mar 2025
+Data Analyst
+– Gathered requirements, designed ETL workflows in Python, and modeled data for performance dashboards.
+– Built interactive Tableau and Power BI reports for travel and beverage industry clients, improving decision-making.
+– Delivered accurate and insightful reporting solutions through multiple Agile development cycles.
+– Documented business rules and reporting KPIs, aligned with executive goals.
+Trend Micro Inc. Jun 2023 – Oct 2023
+DevOps Platform Engineer India
+– Collaborated within Agile teams using JIRA and Confluence to manage sprints, document tickets, and iterate based on stakeholder feedback.
+– Created automation scripts in Python and Bash to streamline cloud testing and release processes.
+– Managed and monitored SQL logs for anomaly detection and incident tracking across test environments.
+– Reduced manual workload by 40% through automated reporting of system health KPIs.
+Trend Micro Inc. Jan 2023 – Jun 2023
+Cyber Security Intern India
+– Supported endpoint security tool testing and monitored logs for breach patterns and vulnerabilities.
+– Generated internal reports and dashboards tracking network defense KPIs and incidents.
+– Assisted senior engineers with penetration testing procedures and patch rollout analysis.
+– Documented system alerts and recommended optimizations in policy enforcement.
+
+Technical Skills:
+BI & Analysis: Tableau, Power BI, Excel, KPI Design, Report Automation, Agile Methodology
+Programming: SQL, Python, Bash, JavaScript, Java
+Data Engineering: Data Modeling, ETL, Data Cleaning, PySpark, Streamlit
+QA & Testing: Unit Testing, UAT, Debugging, User Story Validation
+ML Libraries: scikit-learn, XGBoost, TensorFlow, YOLOv8, Regression Trees, A/B Testing
+Cloud Platforms: Snowflake (hands-on), BigQuery (familiar), AWS (S3, Lambda), Streamlit
+Containers/CI-CD: Git, Docker (beginner), JIRA, Confluence
+Soft Skills: Communication, Requirement Gathering, Stakeholder Alignment, Documentation
+
+Education:
+University of Windsor Jan 2024 – Apr 2025
+Master of Applied Computing Windsor, ON
+Ganpat University Jun 2019 – Jun 2023
+B.Tech in ICT (Information and Communication Technology) Gujarat, India
+
+Projects:
+Health in Changing Climate — Streamlit, SparkSQL, Tableau
+– Created dashboards using Tableau and Streamlit to visualize pollution's effect on global temperature.
+– Preprocessed millions of rows using Apache Spark for real-time analytics and reporting.
+– Deployed regression tree models to simulate cohort-level LTV and churn predictions (MSE: 16.65%).
+– Enabled decision support for climate interventions using hypothesis testing and scenario simulation.
+SQL Server to Snowflake Migration — Kafka, AWS S3, Python
+– Automated SQL-to-Snowflake pipeline using Apache Kafka stream producers and S3 data lakes.
+– Migrated data from SQL Server to Snowflake to support downstream ML and analytics workflows.
+– Maintained referential integrity using checkpoints, schema mapping, and robust offset tracking.
+– Documented modular ETL scripts for handoff and reuse across Agile sprints using Confluence.
+MarineBot Analyst — Flask, YOLOv8, MATLAB
+– Built a Flask-based dashboard for real-time marine bot feeds and object detection using YOLOv8.
+– Trained underwater classification models with 75%+ accuracy and packaged model outputs for UI integration.
+– Implemented MATLAB-based navigation logic and fused IoT sensor data for feedback control.
+– Enabled real-time evaluation and tuning using remote dashboard analytics and ML outputs.
+
+Certifications:
+Apex One Certification – Level 3 (Trend Micro)
+Exam Readiness - AWS Certified Machine Learning – Specialty (AWS)
+AWS Certified Developing Machine Learning Applications (AWS)
+AWS Certified Demystifying AI/ML/DL (AWS)
+Windows Server 2022 Administration (Udemy)
+
+Other Experience:
+Best Buy Canada August 2024 – Present
+Computer Solutions Advisor - Part time Windsor, ON
+– Assisted 60+ customers weekly with troubleshooting, software installations, and PC hardware upgrades.
+– Delivered tailored recommendations for personal and enterprise tech solutions using data-driven upselling.
+– Managed system diagnostics and helped increase tech support satisfaction scores during the holiday season.
+– Collaborated with the Geek Squad team to streamline tech intake and reduce service wait times.
+
+Leadership & Activities:
+• Hackathon Lead – Built a Student Lifecycle Management System in 48 hours during national hackathon.
+• Placement Coordinator – Facilitated 70+ company drives, assisting 250+ students with placements.
+
+Summary:
+– Software Developer with Master's in Applied Computing and 3+ years of experience in full-stack engineering, front-end systems, and cloud-based AI product development.
+– Proficient in Java, Kotlin, Python, SQL, JavaScript, with experience in React, Streamlit, and ML-integrated dashboards.
+– Built scalable, accessible user-facing applications with strong focus on UX and AI-enhanced productivity tools.
+– Led peer design/code reviews and technology stack decisions across freelance and client projects.
+`;
+    const systemPrompt = `You are Kedar's professional AI assistant for his portfolio website. Use the following information to answer questions about Kedar. Always answer in a polished, concise, and helpful manner.\n\n${portfolioData}`;
+    const prompt = `${systemPrompt}\n\nUser: ${message}`;
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      // Check for Gemini API error or quota exceeded
+      if (data.error || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        // Fallback static response
+        return {
+          text: `I'm currently unable to access the AI service.\n\nHere is a summary about Kedar:\n\nKedar Pandya is a Data Scientist and Software Developer with hands-on experience in ML pipelines, predictive modeling, and business intelligence.\n\nKey Skills: Python, SQL, Tableau, Power BI, ETL, Data Engineering, Cloud (Snowflake, AWS), Agile, and more.\n\nRecent Projects include:\n- Health in Changing Climate: Climate analytics dashboards using Streamlit, SparkSQL, Tableau.\n- SQL Server to Snowflake Migration: Automated data pipeline using Kafka, AWS S3, Python.\n- MarineBot Analyst: Real-time marine bot dashboard with Flask, YOLOv8, MATLAB.\n\nFor more, see the portfolio or ask about specific skills, experience, or projects!`,
+          morphTo: 'default'
+        };
       }
-    }
-    
-    if (msg.includes('sql') || msg.includes('database') || msg.includes('migration')) {
       return {
-        text: botResponses.projects['sql-migration'],
-        morphTo: 'sql-migration'
-      }
-    }
-    
-    if (msg.includes('marine') || msg.includes('robot') || msg.includes('underwater')) {
-      return {
-        text: botResponses.projects['marinebot'],
-        morphTo: 'marinebot'
-      }
-    }
-    
-    if (msg.includes('student') || msg.includes('management') || msg.includes('hackathon')) {
-      return {
-        text: botResponses.projects['student-management'],
-        morphTo: 'student-management'
-      }
-    }
-    
-    if (msg.includes('project')) {
-      return {
-        text: botResponses.projects.general,
+        text: data.candidates?.[0]?.content?.parts?.[0]?.text,
         morphTo: 'default'
-      }
-    }
-    
-    if (msg.includes('skill') || msg.includes('technology')) {
+      };
+    } catch (err) {
+      // Fallback static response
       return {
-        text: botResponses.skills,
+        text: `I'm currently unable to access the AI service.\n\nHere is a summary about Kedar:\n\nKedar Pandya is a Data Scientist and Software Developer with hands-on experience in ML pipelines, predictive modeling, and business intelligence.\n\nKey Skills: Python, SQL, Tableau, Power BI, ETL, Data Engineering, Cloud (Snowflake, AWS), Agile, and more.\n\nRecent Projects include:\n- Health in Changing Climate: Climate analytics dashboards using Streamlit, SparkSQL, Tableau.\n- SQL Server to Snowflake Migration: Automated data pipeline using Kafka, AWS S3, Python.\n- MarineBot Analyst: Real-time marine bot dashboard with Flask, YOLOv8, MATLAB.\n\nFor more, see the portfolio or ask about specific skills, experience, or projects!`,
         morphTo: 'default'
-      }
-    }
-    
-    if (msg.includes('experience') || msg.includes('work') || msg.includes('job')) {
-      return {
-        text: botResponses.experience,
-        morphTo: 'default'
-      }
-    }
-    
-    if (msg.includes('education') || msg.includes('degree') || msg.includes('university')) {
-      return {
-        text: botResponses.education,
-        morphTo: 'default'
-      }
-    }
-    
-    if (msg.includes('contact') || msg.includes('email') || msg.includes('hire')) {
-      return {
-        text: botResponses.contact,
-        morphTo: 'default'
-      }
-    }
-    
-    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey')) {
-      return {
-        text: botResponses.greeting[Math.floor(Math.random() * botResponses.greeting.length)],
-        morphTo: 'default'
-      }
-    }
-    
-    return {
-      text: "I can help you learn about Kedar's professional experience, projects, skills, education, or contact information. What would you like to know?",
-      morphTo: 'default'
+      };
     }
   }
 
@@ -1068,6 +1107,10 @@
       messageContainer.scrollTop = messageContainer.scrollHeight;
     }
   });
+
+  let chatCount = 0;
+  let chatLimit = 5;
+  let chatLimitReached = false;
 </script>
 
 <!-- Spectacular 3D Crystal Sidebar Interface -->
@@ -1081,7 +1124,7 @@
           <circle cx="40" cy="40" r="32" fill="none" stroke="#eaf0fa55" stroke-width="2.5" stroke-dasharray="8 8"/>
         </svg>
       </span>
-      <canvas bind:this={fabCanvas} width="60" height="60" class="fab-crystal-canvas"></canvas>
+      <canvas bind:this={fabCanvas} width="60" height="60" class="fab-crystal-canvas" style="display: {isOpen ? 'none' : 'block'}"></canvas>
       <div class="crystal-fab-glow"></div>
       <span class="crystal-fab-tooltip">Chat with Kedar</span>
     </div>
@@ -1114,8 +1157,8 @@
           {/if}
         </div>
         <div class="crystal-input-section">
-          <input type="text" bind:value={inputMessage} on:keydown={handleKeyPress} placeholder="Type your message..." class="crystal-input" autocomplete="off" />
-          <button class="crystal-send" on:click={sendMessage} disabled={!inputMessage.trim()}>⟶</button>
+          <input type="text" bind:value={inputMessage} on:keydown={handleKeyPress} placeholder="Type your message..." class="crystal-input" autocomplete="off" disabled={chatLimitReached} />
+          <button class="crystal-send" on:click={sendMessage} disabled={!inputMessage.trim() || chatLimitReached}>⟶</button>
         </div>
         {#if showQuickActions}
           <div class="crystal-quick-actions">
@@ -1128,6 +1171,9 @@
       </div>
     </div>
   {/if}
+{/if}
+{#if chatLimitReached}
+  <div class="chat-limit-message">You have reached the free tier limit of 5 chats. Please come back later!</div>
 {/if}
 
 <style>
@@ -1249,18 +1295,73 @@
   pointer-events: all;
 }
 @media (max-width: 600px) {
-  .crystal-sidebar-system.sidebar-animate-in {
-    right: 0.5rem;
-    bottom: 0.5rem;
-    min-width: 98vw;
-    max-width: 98vw;
-    border-radius: 1.2rem;
-  }
+  .crystal-sidebar-system.sidebar-animate-in,
   .crystal-sidebar-chat.open.blackglass-bg.dribbble-inspired {
-    width: 100vw;
-    min-width: unset;
-    max-width: unset;
-    border-radius: 1.2rem;
+    right: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .crystal-header.dribbble-header {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-right: 2.5rem !important;
+  }
+  .crystal-close.dribbble-close {
+    position: absolute !important;
+    right: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-size: 1.7rem !important;
+    opacity: 0.7;
+    z-index: 10;
+    background: none;
+    border: none;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .crystal-messages {
+    max-height: 60vh !important;
+    padding: 0 0.2rem !important;
+    border-radius: 0.8rem !important;
+  }
+  .crystal-message-content {
+    font-size: 0.98rem !important;
+    padding: 1rem 1.1rem 1rem 1.1rem !important;
+    max-width: 90vw !important;
+    border-radius: 1.2rem !important;
+  }
+  .crystal-input-section {
+    padding: 0.7rem 0.7rem !important;
+  }
+  .crystal-input {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    padding: 0.7rem 1rem !important;
+    border-radius: 0.9rem !important;
+  }
+  .crystal-quick-actions {
+    gap: 0.3rem !important;
+    padding: 0.5rem 0.7rem 0.5rem 0.7rem !important;
+  }
+  .crystal-action {
+    font-size: 0.95rem !important;
+    padding: 0.4rem 0.7rem !important;
+    border-radius: 0.7rem !important;
+  }
+  .crystal-reset {
+    right: 1.2rem !important;
+    bottom: 1.2rem !important;
+    font-size: 1.2rem !important;
   }
 }
 .crystal-sidebar-chat.open.blackglass-bg.dribbble-inspired {
@@ -1423,7 +1524,6 @@
   align-items: center;
   padding: 1rem 1.5rem;
   background: linear-gradient(120deg, rgba(18,20,24,0.92) 60%, rgba(30,32,38,0.82) 100%);
-  border-top: 1.5px solid #222b;
   backdrop-filter: blur(10px) saturate(1.1);
 }
 .crystal-input {
@@ -1608,4 +1708,91 @@
 }
 
 /* --- End Professional Styling --- */
+
+/* Mobile-specific styles */
+@media (max-width: 600px) {
+  .chatbot-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: unset;
+    max-width: 100vw;
+    max-height: calc(100dvh - var(--header-height, 64px));
+    margin: 0 auto;
+    border-radius: 24px 24px 0 0;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    background: rgba(18, 22, 34, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    animation: popInMobile 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .chatbot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.25rem;
+    min-height: var(--header-height, 64px);
+    border-radius: 24px 24px 0 0;
+    background: rgba(24, 28, 44, 0.92);
+    box-shadow: 0 2px 12px 0 rgba(31, 38, 135, 0.13);
+    position: relative;
+  }
+  .close-btn {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .close-btn:active {
+    background: rgba(255,255,255,0.18);
+  }
+  .chatbot-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding-bottom: 1.5rem;
+    padding-top: 0.5rem;
+  }
+}
+@keyframes popInMobile {
+  0% {
+    transform: translateY(100%) scale(0.98);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.fab-crystal-canvas { display: block; }
+:global(.crystal-fab[aria-label="Open chat"][aria-expanded="true"]) .fab-crystal-canvas,
+.fab-crystal-canvas[style*="display: none"] {
+  display: none !important;
+}
+.chat-limit-message {
+  color: #ff6f61;
+  background: rgba(30,32,38,0.92);
+  border-radius: 1.2em;
+  padding: 0.7em 1.5em;
+  margin: 1em auto 0 auto;
+  text-align: center;
+  font-size: 1.08rem;
+  font-weight: 600;
+  box-shadow: 0 2px 12px #0007;
+  max-width: 90%;
+}
 </style> 
