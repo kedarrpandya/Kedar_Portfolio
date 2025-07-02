@@ -1052,9 +1052,9 @@ Summary:
       const data = await res.json();
       // Check for Gemini API error or quota exceeded
       if (data.error || !data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        // Fallback static response
+        // Fallback: short professional error message
         return {
-          text: `I'm currently unable to access the AI service.\n\nHere is a summary about Kedar:\n\nKedar Pandya is a Data Scientist and Software Developer with hands-on experience in ML pipelines, predictive modeling, and business intelligence.\n\nKey Skills: Python, SQL, Tableau, Power BI, ETL, Data Engineering, Cloud (Snowflake, AWS), Agile, and more.\n\nRecent Projects include:\n- Health in Changing Climate: Climate analytics dashboards using Streamlit, SparkSQL, Tableau.\n- SQL Server to Snowflake Migration: Automated data pipeline using Kafka, AWS S3, Python.\n- MarineBot Analyst: Real-time marine bot dashboard with Flask, YOLOv8, MATLAB.\n\nFor more, see the portfolio or ask about specific skills, experience, or projects!`,
+          text: `I'm currently unable to access the AI service. Please try again later or check back soon.`,
           morphTo: 'default'
         };
       }
@@ -1063,9 +1063,9 @@ Summary:
         morphTo: 'default'
       };
     } catch (err) {
-      // Fallback static response
+      // Fallback: short professional error message
       return {
-        text: `I'm currently unable to access the AI service.\n\nHere is a summary about Kedar:\n\nKedar Pandya is a Data Scientist and Software Developer with hands-on experience in ML pipelines, predictive modeling, and business intelligence.\n\nKey Skills: Python, SQL, Tableau, Power BI, ETL, Data Engineering, Cloud (Snowflake, AWS), Agile, and more.\n\nRecent Projects include:\n- Health in Changing Climate: Climate analytics dashboards using Streamlit, SparkSQL, Tableau.\n- SQL Server to Snowflake Migration: Automated data pipeline using Kafka, AWS S3, Python.\n- MarineBot Analyst: Real-time marine bot dashboard with Flask, YOLOv8, MATLAB.\n\nFor more, see the portfolio or ask about specific skills, experience, or projects!`,
+        text: `I'm currently unable to access the AI service. Please try again later or check back soon.`,
         morphTo: 'default'
       };
     }
