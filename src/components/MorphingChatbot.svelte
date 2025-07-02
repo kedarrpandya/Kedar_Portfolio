@@ -949,100 +949,10 @@
   }
 
   async function processMessage(message) {
-    // Injected portfolio data for Gemini context
-    const portfolioData = `
-Professional Summary:
-– Detail-oriented Data Scientist / Analyst with hands-on experience building ML pipelines, deploying predictive models, and translating data into business insights using Python, SQL, and modern BI tools.
-– Data Scientist with experience designing and deploying predictive ML models, including churn and LTV forecasting, using Python (scikit-learn, XGBoost), SQL, and cloud data platforms like Snowflake and BigQuery.
-– Proficient in A/B testing, dashboarding (Looker/Tableau), and lifecycle model development in Agile environments.
-– Strong collaborator with a proven track record of translating stakeholder needs into data-driven insights and deployed models.
-
-Experience:
-Great Lakes Greenhouse – University of Windsor Jan 2025 – Apr 2025
-Data Analyst (SQL & BI) Windsor, ON
-– Wrote optimized SQL queries to clean, filter, and structure data for visualization and reporting.
-– Built and deployed interactive Tableau dashboards to track greenhouse productivity and workforce KPIs.
-– Reduced manual processing by 45% by integrating dashboards directly with SQL Server.
-– Collaborated with cross-functional teams to define KPIs, validate outputs, and ensure data accuracy.
-Freelance Apr 2022 – Mar 2025
-Data Analyst
-– Gathered requirements, designed ETL workflows in Python, and modeled data for performance dashboards.
-– Built interactive Tableau and Power BI reports for travel and beverage industry clients, improving decision-making.
-– Delivered accurate and insightful reporting solutions through multiple Agile development cycles.
-– Documented business rules and reporting KPIs, aligned with executive goals.
-Trend Micro Inc. Jun 2023 – Oct 2023
-DevOps Platform Engineer India
-– Collaborated within Agile teams using JIRA and Confluence to manage sprints, document tickets, and iterate based on stakeholder feedback.
-– Created automation scripts in Python and Bash to streamline cloud testing and release processes.
-– Managed and monitored SQL logs for anomaly detection and incident tracking across test environments.
-– Reduced manual workload by 40% through automated reporting of system health KPIs.
-Trend Micro Inc. Jan 2023 – Jun 2023
-Cyber Security Intern India
-– Supported endpoint security tool testing and monitored logs for breach patterns and vulnerabilities.
-– Generated internal reports and dashboards tracking network defense KPIs and incidents.
-– Assisted senior engineers with penetration testing procedures and patch rollout analysis.
-– Documented system alerts and recommended optimizations in policy enforcement.
-
-Technical Skills:
-BI & Analysis: Tableau, Power BI, Excel, KPI Design, Report Automation, Agile Methodology
-Programming: SQL, Python, Bash, JavaScript, Java
-Data Engineering: Data Modeling, ETL, Data Cleaning, PySpark, Streamlit
-QA & Testing: Unit Testing, UAT, Debugging, User Story Validation
-ML Libraries: scikit-learn, XGBoost, TensorFlow, YOLOv8, Regression Trees, A/B Testing
-Cloud Platforms: Snowflake (hands-on), BigQuery (familiar), AWS (S3, Lambda), Streamlit
-Containers/CI-CD: Git, Docker (beginner), JIRA, Confluence
-Soft Skills: Communication, Requirement Gathering, Stakeholder Alignment, Documentation
-
-Education:
-University of Windsor Jan 2024 – Apr 2025
-Master of Applied Computing Windsor, ON
-Ganpat University Jun 2019 – Jun 2023
-B.Tech in ICT (Information and Communication Technology) Gujarat, India
-
-Projects:
-Health in Changing Climate — Streamlit, SparkSQL, Tableau
-– Created dashboards using Tableau and Streamlit to visualize pollution's effect on global temperature.
-– Preprocessed millions of rows using Apache Spark for real-time analytics and reporting.
-– Deployed regression tree models to simulate cohort-level LTV and churn predictions (MSE: 16.65%).
-– Enabled decision support for climate interventions using hypothesis testing and scenario simulation.
-SQL Server to Snowflake Migration — Kafka, AWS S3, Python
-– Automated SQL-to-Snowflake pipeline using Apache Kafka stream producers and S3 data lakes.
-– Migrated data from SQL Server to Snowflake to support downstream ML and analytics workflows.
-– Maintained referential integrity using checkpoints, schema mapping, and robust offset tracking.
-– Documented modular ETL scripts for handoff and reuse across Agile sprints using Confluence.
-MarineBot Analyst — Flask, YOLOv8, MATLAB
-– Built a Flask-based dashboard for real-time marine bot feeds and object detection using YOLOv8.
-– Trained underwater classification models with 75%+ accuracy and packaged model outputs for UI integration.
-– Implemented MATLAB-based navigation logic and fused IoT sensor data for feedback control.
-– Enabled real-time evaluation and tuning using remote dashboard analytics and ML outputs.
-
-Certifications:
-Apex One Certification – Level 3 (Trend Micro)
-Exam Readiness - AWS Certified Machine Learning – Specialty (AWS)
-AWS Certified Developing Machine Learning Applications (AWS)
-AWS Certified Demystifying AI/ML/DL (AWS)
-Windows Server 2022 Administration (Udemy)
-
-Other Experience:
-Best Buy Canada August 2024 – Present
-Computer Solutions Advisor - Part time Windsor, ON
-– Assisted 60+ customers weekly with troubleshooting, software installations, and PC hardware upgrades.
-– Delivered tailored recommendations for personal and enterprise tech solutions using data-driven upselling.
-– Managed system diagnostics and helped increase tech support satisfaction scores during the holiday season.
-– Collaborated with the Geek Squad team to streamline tech intake and reduce service wait times.
-
-Leadership & Activities:
-• Hackathon Lead – Built a Student Lifecycle Management System in 48 hours during national hackathon.
-• Placement Coordinator – Facilitated 70+ company drives, assisting 250+ students with placements.
-
-Summary:
-– Software Developer with Master's in Applied Computing and 3+ years of experience in full-stack engineering, front-end systems, and cloud-based AI product development.
-– Proficient in Java, Kotlin, Python, SQL, JavaScript, with experience in React, Streamlit, and ML-integrated dashboards.
-– Built scalable, accessible user-facing applications with strong focus on UX and AI-enhanced productivity tools.
-– Led peer design/code reviews and technology stack decisions across freelance and client projects.
-`;
-    const systemPrompt = `You are Kedar's professional AI assistant for his portfolio website. Use the following information to answer questions about Kedar. Always answer in a polished, concise, and helpful manner.\n\n${portfolioData}`;
+    // --- SYSTEM PROMPT: Gemini must answer ONLY from the following resume data ---
+    const systemPrompt = `You are Kedar Pandya's professional AI assistant. Answer ALL questions strictly and exclusively using the following resume data. Do not use any outside knowledge. Be professional, concise, and conversational.\n\nResume Data:\nKedar Pandya\n+1 (226) 961-4110 | pandya18@uwindsor.ca\nPortfolio | LinkedIn | GitHub\nProfessional Summary\n– Detail-oriented Data Scientist / Analyst with hands-on experience building ML pipelines, deploying predictive models, and translating data into business insights using Python, SQL, and modern BI tools.\n– Data Scientist with experience designing and deploying predictive ML models, including churn and LTV forecasting, using Python (scikit-learn, XGBoost), SQL, and cloud data platforms like Snowflake and BigQuery.\n– Proficient in A/B testing, dashboarding (Looker/Tableau), and lifecycle model development in Agile environments.\n– Strong collaborator with a proven track record of translating stakeholder needs into data-driven insights and deployed models.\nExperience\nGreat Lakes Greenhouse – University of Windsor Jan 2025 – Apr 2025\nData Analyst (SQL & BI) Windsor, ON\n– Wrote optimized SQL queries to clean, filter, and structure data for visualization and reporting.\n– Built and deployed interactive Tableau dashboards to track greenhouse productivity and workforce KPIs.\n– Reduced manual processing by 45% by integrating dashboards directly with SQL Server.\n– Collaborated with cross-functional teams to define KPIs, validate outputs, and ensure data accuracy.\nFreelance Apr 2022 – Mar 2025\nData Analyst\n– Gathered requirements, designed ETL workflows in Python, and modeled data for performance dashboards.\n– Built interactive Tableau and Power BI reports for travel and beverage industry clients, improving decision-making.\n– Delivered accurate and insightful reporting solutions through multiple Agile development cycles.\n– Documented business rules and reporting KPIs, aligned with executive goals.\nTrend Micro Inc. Jun 2023 – Oct 2023\nDevOps Platform Engineer India\n– Collaborated within Agile teams using JIRA and Confluence to manage sprints, document tickets, and iterate based on stakeholder feedback.\n– Created automation scripts in Python and Bash to streamline cloud testing and release processes.\n– Managed and monitored SQL logs for anomaly detection and incident tracking across test environments.\n– Reduced manual workload by 40% through automated reporting of system health KPIs.\nTrend Micro Inc. Jan 2023 – Jun 2023\nCyber Security Intern India\n– Supported endpoint security tool testing and monitored logs for breach patterns and vulnerabilities.\n– Generated internal reports and dashboards tracking network defense KPIs and incidents.\n– Assisted senior engineers with penetration testing procedures and patch rollout analysis.\n– Documented system alerts and recommended optimizations in policy enforcement.\nTechnical Skills\nBI & Analysis Tableau, Power BI, Excel, KPI Design, Report Automation, Agile Methodology\nProgramming SQL, Python, Bash, JavaScript, Java\nData Engineering Data Modeling, ETL, Data Cleaning, PySpark, Streamlit\nQA & Testing Unit Testing, UAT, Debugging, User Story Validation\nML Libraries scikit-learn, XGBoost, TensorFlow, YOLOv8, Regression Trees, A/B Testing\nCloud Platforms Snowflake (hands-on), BigQuery (familiar), AWS (S3, Lambda), Streamlit\nContainers/CI-CD Git, Docker (beginner), JIRA, Confluence\nSoft Skills Communication, Requirement Gathering, Stakeholder Alignment, Documentation\nEducation\nUniversity of Windsor Jan 2024 – Apr 2025\nMaster of Applied Computing Windsor, ON\nGanpat University Jun 2019 – Jun 2023\nB.Tech in ICT (Information and Communication Technology) Gujarat, India\nCloud ML Tools\n• Worked with BigQuery and Snowflake to process large-scale datasets.\n• Knowledge of scikit-learn and XGBoost for regression modeling and feature importance extraction.\n• Familiar with containerization using Docker and basic orchestration principles.\nProjects\nHealth in Changing Climate — Streamlit, SparkSQL, Tableau\n– Created dashboards using Tableau and Streamlit to visualize pollution's effect on global temperature.\n– Preprocessed millions of rows using Apache Spark for real-time analytics and reporting.\n– Deployed regression tree models to simulate cohort-level LTV and churn predictions (MSE: 16.65%).\n– Enabled decision support for climate interventions using hypothesis testing and scenario simulation.\nSQL Server to Snowflake Migration — Kafka, AWS S3, Python\n– Automated SQL-to-Snowflake pipeline using Apache Kafka stream producers and S3 data lakes.\n– Migrated data from SQL Server to Snowflake to support downstream ML and analytics workflows.\n– Maintained referential integrity using checkpoints, schema mapping, and robust offset tracking.\n– Documented modular ETL scripts for handoff and reuse across Agile sprints using Confluence.\nMarineBot Analyst — Flask, YOLOv8, MATLAB\n– Built a Flask-based dashboard for real-time marine bot feeds and object detection using YOLOv8.\n– Trained underwater classification models with 75%+ accuracy and packaged model outputs for UI integration.\n– Implemented MATLAB-based navigation logic and fused IoT sensor data for feedback control.\n– Enabled real-time evaluation and tuning using remote dashboard analytics and ML outputs.\nCertifications\nApex One Certification – Level 3\nTrend Micro\nExam Readiness - AWS Certified Machine Learning – Specialty\nAmazon Web Services\nAWS Certified Developing Machine Learning Applications\nAmazon Web Services\nAWS Certified Demystifying AI/ML/DL\nAmazon Web Services\nWindows Server 2022 Administration\nUdemy\nOther Experience\nBest Buy Canada August 2024 – Present\nComputer Solutions Advisor - Part time Windsor, ON\n– Assisted 60+ customers weekly with troubleshooting, software installations, and PC hardware upgrades.\n– Delivered tailored recommendations for personal and enterprise tech solutions using data-driven upselling.\n– Managed system diagnostics and helped increase tech support satisfaction scores during the holiday season.\n– Collaborated with the Geek Squad team to streamline tech intake and reduce service wait times.\nLeadership & Activities\n• Hackathon Lead – Built a Student Lifecycle Management System in 48 hours during national hackathon.\n• Placement Coordinator – Facilitated 70+ company drives, assisting 250+ students with placements.\n`;
     const prompt = `${systemPrompt}\n\nUser: ${message}`;
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
