@@ -805,13 +805,14 @@
   /* Extra Small Devices (phones, 576px and down) */
   @media (max-width: 575.98px) {
     .projects-section {
-      padding: 2rem 0rem;
-      margin: 1rem;
-      border-radius: 15px;
+      padding: 2rem 0rem !important;
+      margin: 1rem !important;
+      border-radius: 15px !important;
     }
-    
     .section-content {
-      padding: 0 1rem;
+      padding: 0 0.5rem !important;
+      margin: 0 !important;
+      max-width: 100vw !important;
     }
     
     .projects-scroll-wrapper {
