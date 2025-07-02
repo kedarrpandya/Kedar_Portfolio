@@ -47,7 +47,7 @@
                     <span class="education-location">{edu.location}</span>
                     <span class="education-period">{edu.startDate} - {edu.endDate}</span>
                     {#if edu.current}
-                      <span class="education-current">Current</span>
+                      <span class="education-current">Latest</span>
                     {/if}
                   </div>
                 </div>
@@ -65,7 +65,7 @@
                 </div>
                 
                 <div class="education-gpa">
-                  <span class="gpa-label">Performance:</span>
+                  <span class="gpa-label">GPA:</span>
                   <span class="gpa-value">{edu.gpa}</span>
                 </div>
               </div>
@@ -118,10 +118,10 @@
 <style>
   .education-section {
     min-height: 100vh;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(20px);
     border-radius: 20px;

@@ -99,11 +99,16 @@
 <style>
   .timeline-section {
     min-height: 100vh;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
-    background: rgba(56, 62, 78, 0.03);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    margin: 2rem;
+    border: 1px solid rgba(183, 186, 197, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
 
   .section-content {

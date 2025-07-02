@@ -202,7 +202,7 @@
 <style>
   .experience-section {
     min-height: 100vh;
-    padding: 4rem 2rem;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -215,8 +215,9 @@
   }
   
   .section-content {
-    max-width: 1400px;
+    max-width: 1200px;
     width: 100%;
+    padding: 2rem;
   }
   
   .section-title {

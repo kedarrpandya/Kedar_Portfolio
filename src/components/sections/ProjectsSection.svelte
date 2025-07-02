@@ -178,20 +178,6 @@
     <h2 class="section-title">Featured Projects</h2>
     <p class="section-subtitle">Explore my portfolio of data analytics and development projects</p>
     
-    <!-- Scroll Controls -->
-    <div class="scroll-controls">
-      <button class="scroll-btn left" on:click={scrollLeft} aria-label="Scroll left">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-      </button>
-      <button class="scroll-btn right" on:click={scrollRight} aria-label="Scroll right">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-      </button>
-    </div>
-    
     <!-- Horizontal Scrolling Projects -->
     <div class="projects-scroll-wrapper">
       <div class="projects-container" bind:this={scrollContainer}>
@@ -294,18 +280,32 @@
           </div>
         {/each}
       </div>
-    </div>
-    
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator">
-      <div class="scroll-dots">
-        {#each data.projects as _, index}
-          <button 
-            class="scroll-dot {index === activeDotIndex ? 'active' : ''}"
-            on:click={() => scrollToProject(index)}
-            aria-label="Scroll to project {index + 1}"
-          ></button>
-        {/each}
+
+      <!-- Scroll Indicator and Controls: Bottom Center -->
+      <div class="scroll-indicator-controls-wrapper">
+        <div class="scroll-indicator">
+          <div class="scroll-dots">
+            {#each data.projects as _, index}
+              <button 
+                class="scroll-dot {index === activeDotIndex ? 'active' : ''}"
+                on:click={() => scrollToProject(index)}
+                aria-label="Scroll to project {index + 1}"
+              ></button>
+            {/each}
+          </div>
+        </div>
+        <div class="scroll-controls scroll-controls-horizontal">
+          <button class="scroll-btn left" on:click={scrollLeft} aria-label="Scroll left">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          <button class="scroll-btn right" on:click={scrollRight} aria-label="Scroll right">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -333,7 +333,7 @@
 <style>
   .projects-section {
     min-height: 100vh;
-    padding: 4rem 0rem;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -348,10 +348,10 @@
   }
   
   .section-content {
-    max-width: 1600px;
+    max-width: 1200px;
     width: 100%;
+    padding: 2rem;
     overflow: visible;
-    padding: 0 2rem;
   }
   
   .section-title {
@@ -1150,6 +1150,99 @@
     .project-link svg,
     .view-details-btn svg {
       transform: scale(1.2);
+    }
+  }
+
+  .scroll-controls-vertical {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    z-index: 20;
+    background: rgba(0,0,0,0.35);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    padding: 0.5rem 0.3rem;
+    backdrop-filter: blur(12px);
+  }
+  .scroll-controls-vertical .scroll-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(183,186,197,0.18);
+    color: #b6bac5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    margin: 0 auto;
+  }
+  .scroll-controls-vertical .scroll-btn:hover {
+    background: rgba(183,186,197,0.12);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  @media (max-width: 900px) {
+    .scroll-controls-vertical {
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.3rem 0.1rem;
+    }
+    .scroll-controls-vertical .scroll-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+  }
+  @media (max-width: 600px) {
+    .scroll-controls-vertical {
+      display: none;
+    }
+  }
+
+  .scroll-indicator-controls-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+  .scroll-controls-horizontal {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .scroll-controls-horizontal .scroll-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(183,186,197,0.18);
+    color: #b6bac5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    padding: 0;
+  }
+  .scroll-controls-horizontal .scroll-btn:hover {
+    background: rgba(183,186,197,0.12);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  @media (max-width: 600px) {
+    .scroll-indicator-controls-wrapper {
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .scroll-controls-horizontal .scroll-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
     }
   }
 </style> 

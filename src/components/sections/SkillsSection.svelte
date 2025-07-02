@@ -272,7 +272,7 @@
 <style>
   .skills-section {
     min-height: 100vh;
-    padding: 4rem 2rem;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -285,8 +285,10 @@
   }
 
   .section-content {
-    max-width: 1400px;
+    max-width: 1200px;
     width: 100%;
+    padding: 2rem;
+    margin: 0;
   }
 
   .section-title {
@@ -305,7 +307,7 @@
     align-items: center;
     justify-content: center;
     min-height: 600px;
-    margin-bottom: 4rem;
+    margin-bottom: 0;
   }
 
   /* Central Chart Container */

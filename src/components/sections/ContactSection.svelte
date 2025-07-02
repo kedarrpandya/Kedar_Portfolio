@@ -169,7 +169,7 @@
 <style>
   .contact-section {
     min-height: 100vh;
-    padding: 4rem 2rem;
+    padding: 3rem !important;
     display: flex;
     align-items: center;
     justify-content: center;

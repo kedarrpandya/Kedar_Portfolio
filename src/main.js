@@ -28,6 +28,10 @@ function handleClickToEnter() {
     // Trigger zoom animation
     triggerZoomAnimation()
     
+    // Notify that portfolio has been entered
+    window.portfolioHasEntered = true
+    window.dispatchEvent(new CustomEvent('portfolioEntered'))
+    
     console.log('Entered 3D experience with zoom animation')
   }, 500)
 }

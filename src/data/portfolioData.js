@@ -164,7 +164,7 @@ export const portfolioData = {
       current: true,
       description: "Advanced computing program focusing on practical applications in data analytics and software development.",
       relevantCourses: ["Advanced Database Systems", "Machine Learning", "Big Data Analytics", "Software Engineering"],
-      gpa: "Ongoing"
+      gpa: "86%"
     },
     {
       id: 2,
@@ -176,7 +176,7 @@ export const portfolioData = {
       current: false,
       description: "Comprehensive technology program covering software development, networking, and system administration.",
       relevantCourses: ["Database Management", "Software Engineering", "Network Security", "Data Structures"],
-      gpa: "First Class"
+      gpa: "9.4/10"
     }
   ],
 
@@ -504,7 +504,7 @@ export const portfolioData = {
     },
     {
       id: 2,
-      name: "AWS Certified Machine Learning Specialty",
+      name: "AWS Certified Machine Learning Specialty - Exam Readiness",
       issuer: "Amazon Web Services",
       date: "2024",
       credentialId: "AWS-ML-2024",
@@ -514,12 +514,12 @@ export const portfolioData = {
     },
     {
       id: 3,
-      name: "AWS Certified Data Analytics Specialty",
-      issuer: "Amazon Web Services",
-      date: "2024",
+      name: "Windows Server 2022 Administration",
+      issuer: "Udemy",
+      date: "2023",
       credentialId: "AWS-DA-2024",
-      description: "Validates skills in designing and implementing data analytics solutions",
-      skills: ["Data Analytics", "Big Data", "ETL", "Data Visualization"],
+      description: "Validates skills in Windows Server 2022 administration and system management",
+      skills: ["Windows Server 2022", "Server Administration", "System Administration", "Network Management", "IT Infrastructure"],
       verified: true
     }
   ],

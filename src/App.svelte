@@ -3,6 +3,7 @@
   import Scene from './components/Scene.svelte'
   import ScrollingPortfolio from './components/ScrollingPortfolio.svelte'
   import UIOverlay from './components/UIOverlay.svelte'
+  import MorphingChatbot from './components/MorphingChatbot.svelte'
   import { appState } from './store/appState.js'
   import { performanceMonitor } from './utils/performanceMonitor.js'
 
@@ -44,6 +45,9 @@
   <div class="portfolio-container">
     <ScrollingPortfolio />
   </div>
+
+  <!-- Morphing Chatbot - Only show after entering portfolio -->
+  <MorphingChatbot showAfterEntry={true} />
 </main>
 
 <style>
