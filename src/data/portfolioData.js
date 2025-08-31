@@ -18,7 +18,7 @@ export const portfolioData = {
   experience: [
     {
       id: 1,
-      role: "Data Analyst (SQL & BI)",
+      role: "Data Scientist",
       company: "Great Lakes Greenhouse",
       location: "Windsor, ON",
       startDate: "Jan 2025",
