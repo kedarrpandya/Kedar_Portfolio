@@ -18,7 +18,7 @@ export const portfolioData = {
   experience: [
     {
       id: 1,
-      role: "Software Developer - Data and Analytics",
+      role: "Data Analyst",
       company: "Great Lakes Greenhouse",
       location: "Windsor, ON",
       startDate: "Jan 2025",
