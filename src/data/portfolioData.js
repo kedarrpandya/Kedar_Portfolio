@@ -215,7 +215,7 @@ export const portfolioData = {
     "Uptime SLA": "99.9%"
   },
   links: {
-    demo: "#",
+    demo: "https://knowledge-assistant-v1.vercel.app/",
     github: "https://github.com/kedarrpandya/Knowledge_Base_Assistant",
     documentation: "#"
   },
