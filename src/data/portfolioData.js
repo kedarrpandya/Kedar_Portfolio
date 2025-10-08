@@ -182,8 +182,54 @@ export const portfolioData = {
 
   // Flagship Projects
   projects: [
+
     {
-      id: 1,
+  id: 1,
+  title: "Enterprise Knowledge Assistant",
+  subtitle: "AI-Powered RAG System with Interactive 3D UI",
+  description: "Built dual-deployment AI knowledge base with sub-2-second responses, supporting both local (free) and enterprise (Azure) modes with beautiful Apple Liquid Glass interface.",
+  longDescription: "An enterprise-grade AI knowledge assistant leveraging Retrieval Augmented Generation (RAG) to deliver intelligent, context-aware answers with source citations. Features a stunning interactive 3D interface with physics-based animations and supports flexible deployment—run locally at zero cost or scale to 1000+ users on Azure with 99.9% SLA. Combines cutting-edge LLMs (Groq, Azure OpenAI, Ollama) with vector search (Qdrant) for semantic understanding and sub-2-second response times.",
+  technologies: ["React", "TypeScript", "Node.js", "Groq API", "Qdrant", "Azure OpenAI", "Three.js", "Docker", "Express"],
+  category: "AI & Full-Stack Development",
+  featured: true,
+  year: "2025",
+  duration: "4 months",
+  team: "Solo Project",
+  achievements: [
+    "Architected dual-deployment RAG pipeline achieving sub-2-second response times with Groq API and Qdrant vector database supporting semantic search",
+    "Built enterprise-grade system supporting 1000+ concurrent users with 99.9% SLA on Azure, reducing knowledge retrieval costs by $15K/year",
+    "Engineered local deployment mode with zero cloud costs and 100% data sovereignty for privacy-compliant document operations",
+    "Developed interactive 3D UI with Apple Liquid Glass aesthetic using React Three Fiber, implementing physics-based animations (600 constellation stars, realistic planetary orbits) maintaining 60 FPS",
+    "Implemented context-aware RAG with source citations and confidence scoring, improving answer accuracy by 40% over baseline keyword search",
+    "Containerized infrastructure with Docker Compose for one-command deployment, reducing setup time from 4 hours to 3 minutes"
+  ],
+  metrics: {
+    "Response Time (Local)": "1-2 seconds",
+    "Response Time (Enterprise)": "2-5 seconds",
+    "Concurrent Users": "1000+",
+    "Cost Savings": "$15K/year",
+    "Answer Accuracy Improvement": "+40%",
+    "Setup Time Reduction": "4hrs → 3min",
+    "UI Performance": "60 FPS",
+    "Data Sovereignty": "100%",
+    "Uptime SLA": "99.9%"
+  },
+  links: {
+    demo: "#",
+    github: "https://github.com/kedarrpandya/Knowledge_Base_Assistant",
+    documentation: "#"
+  },
+  images: [
+    "/project10-dashboard.png",
+    "/project10-3d-interface.png",
+    "/project10-rag-pipeline.png"
+  ]
+},
+
+
+    
+    {
+      id: 2,
       title: "Health in Changing Climate",
       subtitle: "Climate Data Analytics Platform",
       description: "Developed interactive dashboards using Streamlit and Tableau to visualize climate trends and health impacts.",
@@ -217,7 +263,7 @@ export const portfolioData = {
       ]
     },
     {
-      id: 2,
+      id: 3,
       title: "SQL Server to Snowflake Migration",
       subtitle: "Enterprise Data Pipeline",
       description: "Engineered scalable data pipeline for enterprise database migration using modern cloud technologies.",
@@ -251,7 +297,7 @@ export const portfolioData = {
       ]
     },
     {
-      id: 3,
+      id: 4,
       title: "MarineBot Analyst",
       subtitle: "Underwater Robotics Dashboard",
       description: "Flask-based dashboard for real-time underwater rover monitoring with AI-powered object detection.",
@@ -285,7 +331,7 @@ export const portfolioData = {
       ]
     },
     {
-      id: 4,
+      id: 5,
       title: "Student Lifecycle Management System",
       subtitle: "Hackathon Winner - 48 Hours",
       description: "Built comprehensive student management platform during national hackathon competition.",
@@ -319,7 +365,7 @@ export const portfolioData = {
       ]
     },
     {
-      id: 5,
+      id: 6,
       title: "ShareMe App",
       subtitle: "Social Media Platform",
       description: "A social media web application built with React and Sanity, allowing users to share and save pictures.",
@@ -353,7 +399,7 @@ export const portfolioData = {
       ]
     },
     {
-      id: 6,
+      id: 7,
       title: "E-Commerce Platform",
       subtitle: "Django Web Application",
       description: "Kedar's first web application, developed using Django-Python. It functions as an e-shop for buying items and includes an admin panel for managing products and categories.",
@@ -386,76 +432,9 @@ export const portfolioData = {
         "/project6-admin.png"
       ]
     },
-    {
-      id: 7,
-      title: "Netflix Clone",
-      subtitle: "React Streaming Platform",
-      description: "A recreation of Netflix using ReactJs and Postman API, where users can watch trailers or behind-the-scenes content for series.",
-      longDescription: "A pixel-perfect Netflix clone built with React, featuring dynamic content loading, trailer streaming, and behind-the-scenes content. Integrated with external APIs to provide real-time movie and series data with an authentic Netflix user experience.",
-      technologies: ["React", "JavaScript", "Postman API", "CSS", "HTML"],
-      category: "Web Development",
-      featured: true,
-      year: "2023",
-      duration: "2 months",
-      team: "Solo Project",
-      achievements: [
-        "Recreated Netflix interface with pixel-perfect accuracy",
-        "Integrated Postman API for dynamic content loading",
-        "Implemented video trailer streaming functionality",
-        "Built responsive carousel and grid layouts for content display"
-      ],
-      metrics: {
-        "API Integration": "Seamless",
-        "Video Streaming": "HD Quality",
-        "UI Accuracy": "95%+",
-        "Performance": "Optimized"
-      },
-      links: {
-        demo: "#",
-        github: "https://github.com/kedarrpandya/",
-        documentation: "#"
-      },
-      images: [
-        "/project7-netflix.png",
-        "/project7-player.png"
-      ]
-    },
+    
     {
       id: 8,
-      title: "Spotify Refreshed",
-      subtitle: "Modern Music Platform",
-      description: "A unique music platform created with ReactJS, Rapid API, and Tailwind CSS framework.",
-      longDescription: "A modern interpretation of Spotify with enhanced UI/UX design, built using React and styled with Tailwind CSS. Integrated with Rapid API for music streaming and discovery, featuring a clean, responsive interface with improved user experience.",
-      technologies: ["React", "Rapid API", "Tailwind CSS", "JavaScript", "HTML"],
-      category: "Web Development",
-      featured: true,
-      year: "2023",
-      duration: "2 months",
-      team: "Solo Project",
-      achievements: [
-        "Designed modern UI with Tailwind CSS framework",
-        "Integrated Rapid API for music streaming and search",
-        "Built responsive music player with advanced controls",
-        "Implemented playlist creation and management features"
-      ],
-      metrics: {
-        "Music Streaming": "High Quality",
-        "UI Design": "Modern",
-        "API Calls": "Optimized",
-        "User Experience": "Enhanced"
-      },
-      links: {
-        demo: "#",
-        github: "https://github.com/kedarrpandya/",
-        documentation: "#"
-      },
-      images: [
-        "/project8-spotify.png",
-        "/project8-player.png"
-      ]
-    },
-    {
-      id: 9,
       title: "Data Analysis with Tableau",
       subtitle: "Business Intelligence Dashboard",
       description: "A data analysis project involving data cleaning, filtration, and ETL using MySQL and Tableau, culminating in an attractive, responsive, and interactive dashboard.",
